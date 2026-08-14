@@ -1,0 +1,33 @@
+{
+  "name": "redoscope",
+  "version": "0.1.0",
+  "description": "Prove-it-or-lose-it ReDoS analysis: automaton-based detection of catastrophic backtracking, with generated attack strings and measured timing curves.",
+  "type": "module",
+  "bin": {
+    "redoscope": "./src/cli.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 --test-timeout=180000 'test/**/*.test.ts'",
+    "typecheck": "tsc --noEmit",
+    "redoscope": "node ./src/cli.ts"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "keywords": [
+    "redos",
+    "regex",
+    "catastrophic-backtracking",
+    "security",
+    "static-analysis",
+    "automata"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "typescript": "^5.9.3"
+  }
+}

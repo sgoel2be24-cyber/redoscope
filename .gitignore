@@ -3,3 +3,10 @@ node_modules/
 .DS_Store
 tsconfig.tsbuildinfo
 /out/
+
+bench/cve/.cache/
+/dist/
+web/dist/
+
+eslint-plugin-redoscope/node_modules/
+eslint-plugin-redoscope/package-lock.json

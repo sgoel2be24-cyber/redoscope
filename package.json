@@ -1,18 +1,25 @@
 {
   "name": "redoscope",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Prove-it-or-lose-it ReDoS analysis: automaton-based detection of catastrophic backtracking, with generated attack strings and measured timing curves.",
   "type": "module",
   "bin": {
-    "redoscope": "./src/cli.ts"
+    "redoscope": "./dist/cli.js"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "scripts": {
     "test": "node --test --test-concurrency=1 --test-timeout=180000 'test/**/*.test.ts'",
     "typecheck": "tsc --noEmit",
-    "redoscope": "node ./src/cli.ts"
+    "redoscope": "node ./src/cli.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build",
+    "build:web": "node web/build.ts",
+    "bench:cve": "node bench/cve/fetch.ts && node bench/cve/run.ts"
   },
   "engines": {
     "node": ">=22.18.0"
@@ -23,11 +30,24 @@
     "catastrophic-backtracking",
     "security",
     "static-analysis",
-    "automata"
+    "automata",
+    "sarif",
+    "github-action",
+    "cwe-1333"
   ],
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.20.1",
+    "esbuild": "^0.25.10",
     "typescript": "^5.9.3"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sgoel2be24-cyber/redoscope.git"
   }
 }

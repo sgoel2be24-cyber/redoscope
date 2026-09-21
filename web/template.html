@@ -1,0 +1,335 @@
+<title>redoscope</title>
+<meta name="description" content="Paste a regex. redoscope builds the input that makes it backtrack catastrophically, then runs it against your browser's engine and times it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Schibsted+Grotesk:wght@400;500;600;800&display=swap">
+<style>
+  :root {
+    --ground: #f3f5f1;
+    --panel: #fbfcfa;
+    --ink: #141c19;
+    --muted: #5b6862;
+    --rule: #d6dcd6;
+    --accent: #2747d0;
+    --accent-ink: #ffffff;
+    --danger: #c2361f;
+    --danger-wash: #fbe7e2;
+    --warn: #a86a12;
+    --warn-wash: #f8ecd6;
+    --ok: #2c7a4b;
+    --ok-wash: #e1f0e6;
+    --mark: #fbd9d2;
+    --trace-2: #7e8a84;
+    --code-ground: #e9ede8;
+    --sans: "Schibsted Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0d1311;
+      --panel: #131b18;
+      --ink: #e3e9e5;
+      --muted: #93a09a;
+      --rule: #26312d;
+      --accent: #93a7ff;
+      --accent-ink: #0d1311;
+      --danger: #ff7a61;
+      --danger-wash: #3a1a14;
+      --warn: #e9b35b;
+      --warn-wash: #33260f;
+      --ok: #6fcf97;
+      --ok-wash: #122a1d;
+      --mark: #5a2319;
+      --trace-2: #6c7a74;
+      --code-ground: #18221e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0d1311;
+    --panel: #131b18;
+    --ink: #e3e9e5;
+    --muted: #93a09a;
+    --rule: #26312d;
+    --accent: #93a7ff;
+    --accent-ink: #0d1311;
+    --danger: #ff7a61;
+    --danger-wash: #3a1a14;
+    --warn: #e9b35b;
+    --warn-wash: #33260f;
+    --ok: #6fcf97;
+    --ok-wash: #122a1d;
+    --mark: #5a2319;
+    --trace-2: #6c7a74;
+    --code-ground: #18221e;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 400 16px/1.55 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  code, kbd, .mono { font-family: var(--mono); }
+
+  /* masthead */
+  .mast { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--rule); padding-bottom: 14px; }
+  .word { font: 700 18px/1 var(--mono); letter-spacing: -0.01em; }
+  .word span { color: var(--danger); }
+  .mast nav { display: flex; gap: 18px; font-size: 14px; }
+  .mast nav a { color: var(--muted); text-decoration: none; }
+  .mast nav a:hover { color: var(--ink); }
+
+  h1 { font: 800 clamp(30px, 5.2vw, 52px)/1.04 var(--sans); letter-spacing: -0.025em; margin: 36px 0 12px; text-wrap: balance; max-width: 18ch; }
+  .lede { color: var(--muted); font-size: 18px; max-width: 62ch; margin: 0 0 28px; text-wrap: pretty; }
+
+  /* the instrument */
+  .instrument { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; scroll-margin-top: 16px; }
+  .entry { display: flex; align-items: stretch; border-bottom: 1px solid var(--rule); font: 500 clamp(16px, 2.4vw, 22px)/1 var(--mono); }
+  .entry .slash { color: var(--muted); padding: 18px 2px 18px 18px; user-select: none; }
+  .entry .slash.close { padding: 18px 2px; }
+  .entry input { font: inherit; color: var(--ink); background: transparent; border: 0; outline: none; padding: 18px 4px; min-width: 0; }
+  .entry #pattern { flex: 0 1 auto; field-sizing: content; min-width: 4ch; max-width: 100%; }
+  @supports not (field-sizing: content) { .entry #pattern { flex: 1 1 auto; } }
+  .entry #flags { width: 4.5ch; flex: 0 0 auto; color: var(--accent); padding-right: 18px; }
+  .entry:focus-within { box-shadow: inset 0 -2px 0 var(--accent); }
+
+  .readout { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+  .facts { padding: 20px 22px; border-right: 1px solid var(--rule); display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .plot { padding: 12px 12px 6px; min-width: 0; }
+  .plot svg { width: 100%; height: auto; display: block; }
+
+  .chip { display: inline-flex; align-items: center; gap: 8px; font: 700 12px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 10px; border-radius: 3px; background: var(--code-ground); color: var(--muted); }
+  .chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .chip[data-kind="exponential"] { background: var(--danger-wash); color: var(--danger); }
+  .chip[data-kind="polynomial"] { background: var(--warn-wash); color: var(--warn); }
+  .chip[data-kind="safe"] { background: var(--ok-wash); color: var(--ok); }
+  .chip[data-kind="measuring"] { color: var(--accent); }
+  .chip[data-kind="measuring"]::before { animation: pulse 0.9s ease-in-out infinite alternate; }
+  @keyframes pulse { from { opacity: 1; } to { opacity: 0.2; } }
+  @media (prefers-reduced-motion: reduce) { .chip[data-kind="measuring"]::before { animation: none; } }
+  .note { color: var(--muted); font-size: 14px; margin: 8px 0 0; text-wrap: pretty; }
+
+  .rendered { font: 500 15px/1.6 var(--mono); overflow-wrap: anywhere; }
+  .rendered .slash { color: var(--muted); }
+  .rendered mark { background: var(--mark); color: inherit; text-decoration: underline wavy var(--danger); text-decoration-thickness: 1.5px; text-underline-offset: 5px; padding: 0 1px; border-radius: 2px; }
+
+  dl { margin: 0; display: grid; gap: 12px; }
+  dl div { display: grid; gap: 3px; }
+  dt { font: 600 11px/1 var(--sans); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+  dd { margin: 0; font: 400 14px/1.45 var(--mono); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  button { font: 600 13px/1 var(--sans); cursor: pointer; }
+  .ghost { background: transparent; color: var(--accent); border: 1px solid var(--rule); border-radius: 4px; padding: 7px 10px; }
+  .ghost:hover:not(:disabled) { border-color: var(--accent); }
+  .ghost:disabled { color: var(--muted); cursor: default; opacity: 0.6; }
+  .status { font: 400 12px/1 var(--mono); color: var(--muted); min-height: 12px; padding: 0 12px 10px; text-align: right; }
+
+  .fix-panel { border-top: 1px solid var(--rule); padding: 16px 22px 20px; }
+  .fix-panel-head { font: 700 12px/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+  .fix-panel-head span { font: 400 12px/1.4 var(--sans); letter-spacing: 0; text-transform: none; color: var(--muted); }
+  #fix-list { display: grid; gap: 10px; margin-top: 14px; }
+  .fix-status { margin: 12px 0 2px; color: var(--muted); font-size: 14px; }
+  .fix { border: 1px solid var(--rule); border-radius: 5px; padding: 12px 14px; display: grid; gap: 6px; background: var(--ground); }
+  .fix-head { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+  .fix-head code { font: 500 14px/1.4 var(--mono); color: var(--ink); overflow-wrap: anywhere; }
+  .fix-tag { flex: 0 0 auto; font: 700 10px/1 var(--mono); letter-spacing: 0.07em; text-transform: uppercase; padding: 5px 7px; border-radius: 3px; }
+  .fix-tag.ok { background: var(--ok-wash); color: var(--ok); }
+  .fix-tag.warn { background: var(--warn-wash); color: var(--warn); }
+  .fix-why { margin: 0; font-size: 13px; color: var(--ink); }
+  .fix-proof { margin: 0; font: 400 12px/1.4 var(--mono); color: var(--muted); }
+  .fix-proof span { color: var(--ok); font-weight: 700; }
+
+  svg .grid line { stroke: var(--rule); stroke-width: 1; }
+  svg .grid line.v { stroke-dasharray: 2 4; }
+  svg text { font: 400 11px var(--mono); fill: var(--muted); }
+  svg .axis { font-family: var(--sans); font-size: 12px; }
+  svg .budget line { stroke: var(--danger); stroke-width: 1; stroke-dasharray: 6 4; opacity: 0.7; }
+  svg .budget text { fill: var(--danger); font-size: 11px; }
+  svg .trace { fill: none; stroke-width: 2; stroke-linejoin: round; }
+  svg .trace-0 { stroke: var(--accent); fill: none; }
+  svg .trace-1, svg .trace-2 { stroke: var(--trace-2); fill: none; }
+  svg circle.dot { stroke: none; }
+  svg circle.trace-0 { fill: var(--accent); }
+  svg circle.trace-1, svg circle.trace-2 { fill: var(--trace-2); }
+  svg .killed path { stroke: var(--danger); stroke-width: 2.5; fill: none; }
+  svg .killed text { fill: var(--danger); font-weight: 700; }
+
+  /* traps */
+  section { margin-top: 64px; }
+  h2 { font: 800 clamp(22px, 3vw, 30px)/1.15 var(--sans); letter-spacing: -0.015em; margin: 0 0 8px; text-wrap: balance; }
+  .sub { color: var(--muted); margin: 0 0 22px; max-width: 64ch; text-wrap: pretty; }
+  .traps { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+  .trap { text-align: left; background: var(--panel); color: var(--ink); border: 1px solid var(--rule); border-radius: 5px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; font-weight: 400; }
+  .trap:hover { border-color: var(--accent); }
+  .trap[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+  .trap code { font: 500 14px/1.35 var(--mono); overflow-wrap: anywhere; }
+  .trap span { font: 400 14px/1.45 var(--sans); color: var(--muted); }
+  .trap b { font: 700 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .trap b.exp { color: var(--danger); } .trap b.poly { color: var(--warn); } .trap b.safe { color: var(--ok); } .trap b.dis { color: var(--muted); }
+
+  /* results */
+  .scoreboard { overflow-x: auto; border: 1px solid var(--rule); border-radius: 5px; background: var(--panel); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 11px 14px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th { font: 600 11px/1.2 var(--sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  tbody tr:last-child td { border-bottom: 0; }
+  tr.us td { font-weight: 700; }
+  tr.us td:first-child { color: var(--accent); }
+  .big { display: flex; flex-wrap: wrap; gap: 12px 40px; margin: 0 0 22px; }
+  .big div { display: grid; gap: 2px; }
+  .big strong { font: 800 clamp(30px, 4.4vw, 44px)/1 var(--sans); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .big span { color: var(--muted); font-size: 14px; max-width: 26ch; }
+  .fine { color: var(--muted); font-size: 13px; margin-top: 12px; max-width: 80ch; }
+  .cves { margin-top: 26px; display: grid; gap: 8px; }
+  .cve { display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr); gap: 4px 18px; padding: 12px 0; border-top: 1px solid var(--rule); }
+  .cve .id { font: 500 13px/1.4 var(--mono); }
+  .cve .id a { text-decoration: none; }
+  .cve .id small { display: block; color: var(--muted); font-family: var(--sans); }
+  .cve code { font: 400 13px/1.45 var(--mono); overflow-wrap: anywhere; }
+  .cve .meta { color: var(--muted); font-size: 13px; }
+  .hits { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .hit { font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 3px; background: var(--code-ground); color: var(--muted); }
+  .hit.yes { background: var(--ok-wash); color: var(--ok); }
+  .hit.no { text-decoration: line-through; }
+
+  /* method */
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0; border-top: 2px solid var(--ink); }
+  .steps li { padding: 14px 16px 16px 0; counter-increment: step; }
+  .steps li::before { content: counter(step); font: 700 12px/1 var(--mono); color: var(--accent); display: block; margin-bottom: 10px; }
+  .steps h3 { font: 700 16px/1.2 var(--sans); margin: 0 0 6px; }
+  .steps p { margin: 0; color: var(--muted); font-size: 14px; text-wrap: pretty; }
+
+  .use { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+  .use h3 { font: 700 15px/1.2 var(--sans); margin: 0 0 8px; }
+  pre { margin: 0; background: var(--code-ground); border-radius: 5px; padding: 14px 16px; overflow-x: auto; font: 400 13px/1.55 var(--mono); }
+
+  footer { margin-top: 72px; padding-top: 18px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 14px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+
+  @media (max-width: 760px) {
+    .readout { grid-template-columns: 1fr; }
+    .facts { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .cve { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="word">redo<span>/</span>scope</div>
+    <nav>
+      <a href="#traps">Traps</a>
+      <a href="#cves">Real CVEs</a>
+      <a href="#method">Method</a>
+      <a href="#use">Use it</a>
+    </nav>
+  </header>
+
+  <h1>Don’t guess whether a regex is dangerous. Attack it.</h1>
+  <p class="lede">redoscope reads a regular expression’s automaton, builds the input that forces catastrophic backtracking, runs it against the regex engine in this tab, and times it. You get a verdict, the string that caused it, the timings — and a rewrite that is checked to run fast and still match the same strings.</p>
+
+  <div class="instrument" id="instrument">
+    <label class="entry" for="pattern">
+      <span class="slash" aria-hidden="true">/</span>
+      <input id="pattern" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Regular expression" value="^([a-zA-Z0-9._-]+)+@example\.com$">
+      <span class="slash close" aria-hidden="true">/</span>
+      <input id="flags" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Flags" value="">
+    </label>
+    <div class="readout">
+      <div class="facts">
+        <div>
+          <span class="chip" id="verdict" data-kind="idle" role="status">Loading</span>
+          <p class="note" id="verdict-note">Analysing the automaton.</p>
+        </div>
+        <div class="rendered" id="rendered" aria-label="Pattern with the responsible sub-expression marked"></div>
+        <dl>
+          <div><dt>Attack string</dt><dd id="attack">—</dd></div>
+          <div><dt>Evidence</dt><dd id="evidence">—</dd></div>
+          <div><dt>Cost</dt><dd id="cost">—</dd></div>
+        </dl>
+        <div class="row"><button class="ghost" id="copy-attack" disabled>Copy as JS</button></div>
+      </div>
+      <div class="plot">
+        <svg id="chart" role="img" aria-label="Match time against attack length, log-log"></svg>
+        <div class="status" id="status" aria-live="polite"></div>
+      </div>
+    </div>
+    <div class="fix-panel" id="fix-panel" hidden>
+      <div class="fix-panel-head">Suggested fix <span>checked: runs fast, and matches the same strings</span></div>
+      <div id="fix-list"></div>
+    </div>
+  </div>
+
+  <section id="traps">
+    <h2>Eight regexes that fool the usual checks</h2>
+    <p class="sub">Every verdict here comes from running the tool, not from memory. Two of these look dangerous and are not; two look harmless and are not.</p>
+    <div class="traps">
+      <button class="trap" data-pattern="^(a+)+$"><b class="exp">exponential</b><code>^(a+)+$</code><span>The textbook case. 29 characters stall the engine.</span></button>
+      <button class="trap" data-pattern="(a+)+"><b class="dis">ambiguous, harmless</b><code>(a+)+</code><span>Exponentially ambiguous, but it is unanchored and always matches, so the engine never explores the ambiguity.</span></button>
+      <button class="trap" data-pattern="^(\s|\w)+$"><b class="safe">linear</b><code>^(\s|\w)+$</code><span>Looks like a nested quantifier bug. <code>\s</code> and <code>\w</code> are disjoint, so no string has two parses.</span></button>
+      <button class="trap" data-pattern="^([ab]|[bc])*$"><b class="exp">exponential</b><code>^([ab]|[bc])*$</code><span>Only the letter b sits in both branches. Time it with “aaaa…” and you measure nothing.</span></button>
+      <button class="trap" data-pattern="\s*,\s*"><b class="poly">polynomial</b><code>\s*,\s*</code><span>A list splitter with no ambiguity at all. Unanchored, the engine retries at every offset, and each retry eats the whole run of spaces. This is the shape of the koa, hono and axios advisories.</span></button>
+      <button class="trap" data-pattern="^(?:\d+)?\.?\d+ *(ms|s|m|h)?$" data-flags="i"><b class="poly">polynomial</b><code>^(?:\d+)?\.?\d+ *(ms|s|m|h)?$</code><span>A duration parser in the style of the <code>ms</code> package. Star height 1, and still quadratic.</span></button>
+      <button class="trap" data-pattern="^([a-zA-Z0-9._-]+)+@example\.com$"><b class="exp">exponential</b><code>^([a-zA-Z0-9._-]+)+@example\.com$</code><span>An email check. A long local part with no @ takes forever.</span></button>
+      <button class="trap" data-pattern="^\d+(\.\d+)?$"><b class="safe">linear</b><code>^\d+(\.\d+)?$</code><span>A decimal number. Every character has exactly one place to go.</span></button>
+    </div>
+  </section>
+
+  <!--CVE-RESULTS-->
+
+  <section id="method">
+    <h2>How a verdict becomes evidence</h2>
+    <p class="sub">Matching time is governed by how many distinct paths spell an input, so the question is decided on the automaton, then checked against the real engine.</p>
+    <ol class="steps">
+      <li><h3>Parse</h3><p>Full ECMAScript syntax, including Annex B forms. Classes, <code>\p{…}</code> and case folding become code-point interval sets.</p></li>
+      <li><h3>Compile</h3><p>An NFA for what a backtracking engine <em>explores</em>, not the language it accepts: <code>(a|a)</code> is two edges.</p></li>
+      <li><h3>Decide ambiguity</h3><p>Exponential and polynomial degree, decided on product automata (Weideman et al., CIAA 2016), including the engine’s retry at every offset.</p></li>
+      <li><h3>Build a witness</h3><p><code>prefix · pumpⁿ · suffix</code>, with a suffix chosen to make the overall match fail.</p></li>
+      <li><h3>Measure</h3><p>Run on an escalating ladder in a process or worker that can be killed, then fit the growth curve.</p></li>
+    </ol>
+  </section>
+
+  <section id="use">
+    <h2>Use it</h2>
+    <p class="sub">No runtime dependencies, no build step, no network. Node 22.18 or newer runs the TypeScript source directly.</p>
+    <div class="use">
+      <div>
+        <h3>Command line</h3>
+<pre>node src/cli.ts '^(a+)+$'
+node src/cli.ts scan src/ --fail-on polynomial
+node src/cli.ts scan . --sarif out.sarif</pre>
+      </div>
+      <div>
+        <h3>GitHub Actions</h3>
+<pre>permissions:
+  security-events: write
+steps:
+  - uses: actions/checkout@v4
+  - uses: sgoel2be24-cyber/redoscope@v0.2.0
+    with:
+      path: src
+      fail-on: exponential</pre>
+      </div>
+      <div>
+        <h3>Library</h3>
+<pre>import { inspect } from "redoscope";
+
+const r = inspect("^(a+)+$");
+r.verdict;      // "exponential"
+r.exploitable;  // true, measured
+r.attack;       // { prefix, pump, suffix }</pre>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Built by Shikhar Goel. MIT licensed.</span>
+    <span>Lookaround and backreferences are over-approximated and flagged as reduced confidence.</span>
+  </footer>
+</div>
+
+<script>/*APP*/</script>

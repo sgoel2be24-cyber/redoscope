@@ -1,0 +1,61 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ["22.18", "24"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Package smoke test
+        run: |
+          npm pack
+          mkdir /tmp/smoke && cd /tmp/smoke && npm init -y >/dev/null
+          npm install "$GITHUB_WORKSPACE"/redoscope-*.tgz
+          set +e; ./node_modules/.bin/redoscope '^(a+)+$'; test $? -eq 1
+
+  eslint-plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Build and pack the analyser
+        run: |
+          npm ci
+          npm run build
+          npm pack
+      - name: Test the ESLint plugin against it
+        working-directory: eslint-plugin-redoscope
+        run: |
+          npm install --no-save --no-package-lock eslint@9 "$GITHUB_WORKSPACE"/redoscope-*.tgz
+          node --test test.js
+
+  dogfood:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          path: src web
+          fail-on: exponential

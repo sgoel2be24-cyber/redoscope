@@ -9,8 +9,9 @@
 
 import fs from "node:fs";
 import process from "node:process";
-import { inspect, type Report } from "./index.ts";
+import { inspect, suggestFixes, type Report, type Suggestion } from "./index.ts";
 import { renderHtmlReport } from "./report.ts";
+import { renderSarif } from "./sarif.ts";
 import { describeAttack } from "./witness.ts";
 import { repetitionsToExceed } from "./dynamic.ts";
 import { collectFiles, scanFile, type FoundRegex } from "./scan.ts";
@@ -80,6 +81,38 @@ function hotspotLines(report: Report): string[] {
   return [`${gutter}${report.source}/${report.flags}`, underline];
 }
 
+/** Suggestions, or an empty list if the analysis throws. */
+function safeSuggest(report: Report): Suggestion[] {
+  try {
+    return suggestFixes(report.source, report.flags, report);
+  } catch {
+    return [];
+  }
+}
+
+/** Print verified fix suggestions under a finding. */
+function printSuggestions(report: Report, indent: string): void {
+  const write = (line: string) => console.log(indent + line);
+  const suggestions = safeSuggest(report);
+  if (suggestions.length === 0) {
+    write("");
+    write(dim("  suggest   no automatic rewrite found; bound the input or restructure by hand"));
+    return;
+  }
+  write("");
+  write(bold("  suggested fixes") + dim("  (each checked: run fast, and agree with the original)"));
+  for (const s of suggestions) {
+    const tag = s.kind === "bounded" ? yellow("mitigation") : green("equivalent");
+    write("");
+    write("    " + cyan("/" + s.rewrite + "/" + s.flags));
+    const proof = s.kind === "bounded"
+      ? `caps length at ${s.bound}; rejects longer input — ${s.samplesChecked} samples agree otherwise`
+      : `${s.samplesChecked} generated strings, accept/reject unchanged`;
+    write("    " + tag + dim("  " + s.summary));
+    write(dim("      verified  " + proof));
+  }
+}
+
 function printReport(report: Report, indent = ""): void {
   const write = (line: string) => console.log(indent + line);
 
@@ -137,6 +170,10 @@ function printReport(report: Report, indent = ""): void {
   }
 
   const notes: string[] = [];
+  const growth = report.dynamic?.growth;
+  if (report.exploitable === false && (growth === "polynomial" || growth === "exponential")) {
+    notes.push("super-linear, but no attack within --max-input reaches 1s of CPU");
+  }
   if (report.approximations.backreference) notes.push("backreferences modelled as empty");
   if (report.approximations.lookaround) notes.push("lookaround modelled as empty");
   if (report.approximations.widenedRepeat) notes.push("a large bounded repeat was widened");
@@ -157,6 +194,9 @@ interface Options {
   failOn: "exponential" | "polynomial" | "any" | "never";
   quiet: boolean;
   html: string | null;
+  sarif: string | null;
+  maxInput: number | undefined;
+  suggest: boolean;
 }
 
 const HELP = `redoscope — prove-it-or-lose-it ReDoS analysis
@@ -168,8 +208,12 @@ USAGE
 OPTIONS
   --json              machine-readable output
   --html <file>       write a self-contained HTML report (scan only)
+  --sarif <file>      write SARIF 2.1.0 for GitHub code scanning (scan only)
+  --suggest           propose a verified, faster rewrite for each finding
   --no-measure        static analysis only; do not run the engine
   --timeout <ms>      budget per attack candidate (default 2000)
+  --max-input <chars> only report attacks that cost 1s of CPU within this
+                      many characters (e.g. your request size limit)
   --fail-on <level>   exit non-zero on: exponential | polynomial | any | never
                       (default: exponential)
   --quiet             findings only, no per-pattern detail
@@ -191,6 +235,9 @@ function parseArgs(argv: string[]): { options: Options; rest: string[] } | null 
     failOn: "exponential",
     quiet: false,
     html: null,
+    sarif: null,
+    maxInput: undefined,
+    suggest: false,
   };
   const rest: string[] = [];
 
@@ -203,6 +250,9 @@ function parseArgs(argv: string[]): { options: Options; rest: string[] } | null 
       case "--no-measure":
         options.measure = false;
         break;
+      case "--suggest":
+        options.suggest = true;
+        break;
       case "--quiet":
       case "-q":
         options.quiet = true;
@@ -213,10 +263,22 @@ function parseArgs(argv: string[]): { options: Options; rest: string[] } | null 
         options.timeoutMs = value;
         break;
       }
+      case "--max-input": {
+        const value = Number(argv[++i]);
+        if (!Number.isInteger(value) || value <= 0) return null;
+        options.maxInput = value;
+        break;
+      }
       case "--html": {
         const value = argv[++i];
         if (!value || value.startsWith("--")) return null;
         options.html = value;
+        break;
+      }
+      case "--sarif": {
+        const value = argv[++i];
+        if (!value || value.startsWith("--")) return null;
+        options.sarif = value;
         break;
       }
       case "--fail-on": {
@@ -267,13 +329,18 @@ function runSingle(args: string[], options: Options): number {
   const report = inspect(source, flags, {
     measure: options.measure,
     timeoutMs: options.timeoutMs,
+          maxInput: options.maxInput,
   });
 
+  const wantSuggestions = options.suggest && !report.error && report.verdict !== "safe" && report.exploitable !== false;
+
   if (options.json) {
-    console.log(JSON.stringify(report, null, 2));
+    const suggestions = wantSuggestions ? safeSuggest(report) : undefined;
+    console.log(JSON.stringify(suggestions ? { ...report, suggestions } : report, null, 2));
   } else {
     console.log("");
     printReport(report);
+    if (wantSuggestions) printSuggestions(report, "");
     console.log("");
   }
   if (report.error) return 2;
@@ -324,6 +391,7 @@ function runScan(paths: string[], options: Options): number {
         report = inspect(location.source, location.flags, {
           measure: options.measure,
           timeoutMs: options.timeoutMs,
+          maxInput: options.maxInput,
         });
         cache.set(key, report);
       }
@@ -337,6 +405,12 @@ function runScan(paths: string[], options: Options): number {
       if (!report.error && report.verdict !== "safe") ambiguous.push({ location, report });
       if (isFinding(report, options.failOn)) findings.push({ location, report });
     }
+  }
+
+  if (options.sarif) {
+    const pkg = JSON.parse(fs.readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+    fs.writeFileSync(options.sarif, renderSarif(findings, pkg.version), "utf8");
+    if (!options.json) console.log(dim(`wrote ${options.sarif}`));
   }
 
   if (options.json) {
@@ -379,6 +453,7 @@ function runScan(paths: string[], options: Options): number {
     console.log(`${bold(where)}  ${severityLabel(report)}`);
     if (!options.quiet) {
       printReport(report, "  ");
+      if (options.suggest && report.exploitable !== false) printSuggestions(report, "  ");
       console.log("");
     }
   }

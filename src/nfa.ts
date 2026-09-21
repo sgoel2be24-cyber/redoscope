@@ -70,6 +70,12 @@ export interface NFA {
   approximations: Approximations;
   /** True when the pattern is anchored at the start, so the engine cannot retry at later offsets. */
   anchoredStart: boolean;
+  /**
+   * Accepting states whose acceptance does not pass through an assertion,
+   * lookaround or backreference. Reaching one means the match succeeds,
+   * whatever follows: `\s*` accepts unconditionally, `\s*$` does not.
+   */
+  acceptsUnconditionally: Set<number>;
 }
 
 interface Fragment {
@@ -80,6 +86,8 @@ interface Fragment {
 class Builder {
   charTrans: CharTransition[][] = [];
   epsTrans: number[][] = [];
+  /** States whose outgoing ε-edge is conditional: an assertion, lookaround or backreference. */
+  guarded = new Set<number>();
   maxStates: number;
   approximations: Approximations = {
     lookaround: false,
@@ -112,6 +120,15 @@ class Builder {
   empty(): Fragment {
     const s = this.newState();
     return { start: s, end: s };
+  }
+
+  /** ε that the engine may refuse to take, depending on context. */
+  conditional(): Fragment {
+    const start = this.newState();
+    const end = this.newState();
+    this.addEps(start, end);
+    this.guarded.add(start);
+    return { start, end };
   }
 
   build(node: Node): Fragment {
@@ -164,17 +181,17 @@ class Builder {
         // there are. Treating them as ε keeps the over-approximation honest.
         if (node.kind === "\\b" || node.kind === "\\B") this.approximations.wordBoundary = true;
         else this.approximations.anchor = true;
-        return this.empty();
+        return this.conditional();
 
       case "Lookaround":
         this.approximations.lookaround = true;
-        return this.empty();
+        return this.conditional();
 
       case "Backref":
         // A backreference can consume input, but how much depends on a capture
         // this model does not track. ε is the conservative stand-in.
         this.approximations.backreference = true;
-        return this.empty();
+        return this.conditional();
     }
   }
 
@@ -283,11 +300,12 @@ class Builder {
     return multi;
   }
 
-  epsilonClosure(state: number): number[] {
+  epsilonClosure(state: number, unconditionalOnly = false): number[] {
     const seen = new Set<number>([state]);
     const stack = [state];
     while (stack.length > 0) {
       const q = stack.pop()!;
+      if (unconditionalOnly && this.guarded.has(q)) continue;
       for (const next of this.epsTrans[q]) {
         if (!seen.has(next)) {
           seen.add(next);
@@ -357,7 +375,9 @@ export function compile(pattern: Pattern, options: CompileOptions = {}): NFA {
 
   const rawTransitions: CharTransition[][] = [];
   const rawAccepting = new Set<number>();
+  const rawUnconditional = new Set<number>();
   for (let q = 0; q < builder.charTrans.length; q++) {
+    if (builder.epsilonClosure(q, true).includes(frag.end)) rawUnconditional.add(q);
     const multi = builder.multiRouteStates(q);
     const out: CharTransition[] = [];
     for (const p of closures[q]) {
@@ -390,7 +410,11 @@ export function compile(pattern: Pattern, options: CompileOptions = {}): NFA {
     rawTransitions[q].map((t) => ({ ...t, to: remap.get(t.to)! })),
   );
   const accepting = new Set<number>();
-  for (const q of order) if (rawAccepting.has(q)) accepting.add(remap.get(q)!);
+  const acceptsUnconditionally = new Set<number>();
+  for (const q of order) {
+    if (rawAccepting.has(q)) accepting.add(remap.get(q)!);
+    if (rawUnconditional.has(q)) acceptsUnconditionally.add(remap.get(q)!);
+  }
 
   return {
     stateCount: order.length,
@@ -400,6 +424,7 @@ export function compile(pattern: Pattern, options: CompileOptions = {}): NFA {
     pattern,
     approximations: builder.approximations,
     anchoredStart: isAnchoredStart(pattern.root),
+    acceptsUnconditionally,
   };
 }
 

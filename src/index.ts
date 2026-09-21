@@ -7,12 +7,10 @@
  * measurement proving that string works.
  */
 
-import { parse } from "./parser.ts";
-import { compile, PatternTooLargeError, type Approximations } from "./nfa.ts";
-import { analyze, type AnalysisResult, type SourceSpan, type Verdict } from "./analysis.ts";
-import { buildAttacks, describeAttack, renderAttack, type Attack } from "./witness.ts";
-import { verify, projectMs, type DynamicResult, type Growth } from "./dynamic.ts";
-import { RegexParseError, walk, type Node } from "./ast.ts";
+import type { SourceSpan } from "./analysis.ts";
+import { describeAttack, renderAttack } from "./witness.ts";
+import { verify, projectMs } from "./dynamic.ts";
+import { prepare, withMeasurement, type Report } from "./core.ts";
 
 export { parse } from "./parser.ts";
 export { compile, simulate } from "./nfa.ts";
@@ -25,32 +23,11 @@ export type { DynamicResult, Growth, TimingSample } from "./dynamic.ts";
 export type { Attack } from "./witness.ts";
 export type { NFA, Approximations } from "./nfa.ts";
 
-/** How much the static verdict can be trusted, given the modelling shortcuts taken. */
-export type Confidence = "measured" | "high" | "reduced";
+export type { Confidence, Report, Prepared } from "./core.ts";
+export { prepare, withMeasurement, fitsWithin } from "./core.ts";
 
-export interface Report {
-  source: string;
-  flags: string;
-  /** What the automaton says. */
-  verdict: Verdict;
-  /** 1 for linear, k for Θ(n^k), `Infinity` for exponential. */
-  degree: number;
-  confidence: Confidence;
-  /** The sub-expression responsible, as an offset range into `source`. */
-  hotspot: SourceSpan | null;
-  /** The generated attack, present whenever the verdict is not "safe". */
-  attack: Attack | null;
-  /** Measurement, when it was run. */
-  dynamic: DynamicResult | null;
-  /**
-   * Whether the pattern can actually be made slow, as opposed to merely being
-   * ambiguous. An ambiguous pattern with no reachable failure is not a bug.
-   */
-  exploitable: boolean | null;
-  approximations: Approximations;
-  /** Set when the pattern could not be analysed at all. */
-  error: string | null;
-}
+export type { Suggestion, Candidate } from "./suggest.ts";
+export { suggestFixes, candidateFixes } from "./suggest.ts";
 
 export interface InspectOptions {
   /** Run the timing harness. On by default; it is what makes a report evidence. */
@@ -58,110 +35,18 @@ export interface InspectOptions {
   /** Wall-clock budget per attack candidate, in milliseconds. */
   timeoutMs?: number;
   maxStates?: number;
-}
-
-/**
- * Grow a hotspot outwards to the whole quantifier that contains it.
- *
- * The analysis points at the individual character edges in the pump, but the
- * inner `a+` of `(a+)+` is perfectly safe on its own — it is the nesting that
- * costs. Reporting the widest enclosing repeat blames the construct a reader
- * actually has to change.
- */
-function widenHotspot(root: Node, span: SourceSpan): SourceSpan {
-  // Union rather than "smallest enclosing": a polynomial pump straddles two
-  // sibling loops, as in `\s*\s*`, and neither one alone contains the span.
-  let start = span.start;
-  let end = span.end;
-  walk(root, (node) => {
-    if (node.type !== "Repeat") return;
-    if (node.end <= span.start || node.start >= span.end) return; // no overlap
-    start = Math.min(start, node.start);
-    end = Math.max(end, node.end);
-  });
-  return { start, end };
-}
-
-function confidenceOf(approximations: Approximations, measured: boolean): Confidence {
-  if (measured) return "measured";
-  // Backreferences and lookaround are modelled as ε, which adds paths the
-  // engine may not have. Anchors are modelled the same way but only ever
-  // restrict where a match may start, so they do not inflate ambiguity.
-  if (approximations.backreference || approximations.lookaround) return "reduced";
-  return "high";
+  /**
+   * Largest input your code accepts. When set, a pattern is exploitable only
+   * if its attack costs a second of CPU within this many characters.
+   */
+  maxInput?: number;
 }
 
 /** Analyse one pattern end to end. */
 export function inspect(source: string, flags = "", options: InspectOptions = {}): Report {
-  const measure = options.measure ?? true;
-
-  const failed = (error: string): Report => ({
-    source,
-    flags,
-    verdict: "safe",
-    degree: 1,
-    confidence: "reduced",
-    hotspot: null,
-    attack: null,
-    dynamic: null,
-    exploitable: null,
-    approximations: {
-      lookaround: false,
-      backreference: false,
-      wordBoundary: false,
-      anchor: false,
-      widenedRepeat: false,
-    },
-    error,
-  });
-
-  let analysis: AnalysisResult;
-  let nfa;
-  let root: Node;
-  try {
-    const pattern = parse(source, flags);
-    root = pattern.root;
-    nfa = compile(pattern, { maxStates: options.maxStates });
-    analysis = analyze(nfa);
-  } catch (error) {
-    if (error instanceof RegexParseError || error instanceof PatternTooLargeError) {
-      return failed(error.message);
-    }
-    throw error;
-  }
-
-  if (analysis.verdict === "safe" || analysis.witness === null) {
-    return {
-      source,
-      flags,
-      verdict: "safe",
-      degree: 1,
-      confidence: confidenceOf(nfa.approximations, false),
-      hotspot: null,
-      attack: null,
-      dynamic: null,
-      exploitable: analysis.truncated ? null : false,
-      approximations: nfa.approximations,
-      error: null,
-    };
-  }
-
-  const attacks = buildAttacks(nfa, analysis.witness);
-  const dynamic = measure ? verify(source, flags, attacks, { timeoutMs: options.timeoutMs }) : null;
-
-  return {
-    source,
-    flags,
-    verdict: analysis.verdict,
-    degree: analysis.degree,
-    confidence: confidenceOf(nfa.approximations, dynamic !== null),
-    hotspot: analysis.hotspot ? widenHotspot(root, analysis.hotspot) : null,
-    attack: dynamic?.attack ?? attacks[0],
-    dynamic,
-    exploitable: dynamic ? dynamic.growth === "exponential" || dynamic.growth === "polynomial" : null,
-    approximations: nfa.approximations,
-    error: null,
-  };
+  const { report, attacks } = prepare(source, flags, options.maxStates);
+  if (attacks.length === 0 || options.measure === false) return report;
+  return withMeasurement(report, verify(source, flags, attacks, { timeoutMs: options.timeoutMs }), options.maxInput);
 }
 
 /** One-line summary of a report, for terminals and commit messages. */

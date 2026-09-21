@@ -1,0 +1,60 @@
+name: redoscope
+description: Find regexes that backtrack catastrophically — and prove it with a generated attack string and a measured timing curve.
+author: Shikhar Goel
+branding:
+  icon: shield
+  color: red
+
+inputs:
+  path:
+    description: Files or directories to scan, space-separated.
+    default: "."
+  fail-on:
+    description: "Fail the job on: exponential | polynomial | any | never"
+    default: exponential
+  sarif:
+    description: Upload findings to GitHub code scanning (needs `security-events: write`).
+    default: "true"
+  timeout:
+    description: Budget per attack candidate, in milliseconds.
+    default: "2000"
+  max-input:
+    description: Largest input your code accepts, in characters. Only attacks that cost 1s of CPU within it are reported. Empty means no limit.
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "24"
+
+    - name: Scan
+      id: scan
+      shell: bash
+      env:
+        REDOSCOPE_PATHS: ${{ inputs.path }}
+        REDOSCOPE_FAIL_ON: ${{ inputs.fail-on }}
+        REDOSCOPE_TIMEOUT: ${{ inputs.timeout }}
+        REDOSCOPE_MAX_INPUT: ${{ inputs.max-input }}
+      run: |
+        set +e
+        extra=()
+        if [ -n "$REDOSCOPE_MAX_INPUT" ]; then extra=(--max-input "$REDOSCOPE_MAX_INPUT"); fi
+        # Word-splitting on the path list is intended.
+        # shellcheck disable=SC2086
+        node --no-warnings "$GITHUB_ACTION_PATH/src/cli.ts" scan $REDOSCOPE_PATHS \
+          --fail-on "$REDOSCOPE_FAIL_ON" --timeout "$REDOSCOPE_TIMEOUT" \
+          --sarif "$RUNNER_TEMP/redoscope.sarif" "${extra[@]}"
+        echo "status=$?" >> "$GITHUB_OUTPUT"
+
+    - name: Upload to code scanning
+      if: inputs.sarif == 'true'
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ runner.temp }}/redoscope.sarif
+        category: redoscope
+
+    - name: Apply --fail-on
+      shell: bash
+      run: exit "${{ steps.scan.outputs.status }}"

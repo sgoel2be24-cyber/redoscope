@@ -17,10 +17,19 @@
  * same word" becomes "one path in the product". Following Weideman et al.,
  * *Analyzing Matching Time Behavior of Backtracking Regular Expression
  * Matchers* (CIAA 2016).
+ *
+ * One thing the automaton of a single match attempt does not show: an
+ * unanchored regex that fails at offset 0 is retried at offset 1, 2, … n.
+ * That search loop is itself a pump. `\s*,\s*` is unambiguous, yet on a run
+ * of n spaces every one of the n attempts consumes the rest of the run before
+ * failing — Θ(n²), and the single most common shape of ReDoS in real
+ * advisories. So polynomial ambiguity is decided on Σ*·A, with the Σ* loop
+ * standing for the engine's retries.
  */
 
-import type { CharSet } from "./charset.ts";
+import { CharSet } from "./charset.ts";
 import type { NFA } from "./nfa.ts";
+import { walk } from "./ast.ts";
 
 export type Verdict = "safe" | "polynomial" | "exponential";
 
@@ -37,10 +46,25 @@ export interface Witness {
   pump: number[];
   /** The automaton states the pump loops on. */
   pumpStates: number[];
+  /**
+   * Every character each pump position could have been. `pump` holds one
+   * sample; the rest let attack construction try other character classes
+   * when an assertion like `\b` depends on which one is chosen.
+   */
+  pumpSets: CharSet[];
+  /** True when the pump relies on the engine retrying at later offsets. */
+  retried: boolean;
 }
 
 export interface AnalysisResult {
   verdict: Verdict;
+  /**
+   * Weaker witnesses worth measuring when the best one turns out harmless.
+   * The highest-degree pump is not always the one that fails: for
+   * `\s*\n\s*` the degree-3 pump "\n" always matches, while the degree-2
+   * pump " " makes every retry fail.
+   */
+  alternatives: Witness[];
   /** 1 for linear, k for Θ(n^k), `Infinity` for exponential. */
   degree: number;
   witness: Witness | null;
@@ -53,6 +77,8 @@ export interface AnalysisResult {
 export interface AnalysisOptions {
   /** Cap on explored product states, across both checks. */
   maxProductStates?: number;
+  /** Model the engine retrying an unanchored pattern at every offset. On by default. */
+  searchLoop?: boolean;
 }
 
 const DEFAULT_MAX_PRODUCT_STATES = 250_000;
@@ -149,27 +175,34 @@ function cycleStates(nfa: NFA): { members: Set<number>; component: Int32Array } 
 interface StepInfo {
   from: number;
   codePoint: number;
+  set: CharSet;
   span: SourceSpan;
 }
 
-/** Walk parent pointers back to the seed, producing the code points read. */
-function reconstruct(parents: Map<number, StepInfo>, from: number, to: number): {
+interface Path {
   codePoints: number[];
+  sets: CharSet[];
   spans: SourceSpan[];
-} {
+}
+
+/** Walk parent pointers back to the seed, producing the code points read. */
+function reconstruct(parents: Map<number, StepInfo>, from: number, to: number): Path {
   const codePoints: number[] = [];
+  const sets: CharSet[] = [];
   const spans: SourceSpan[] = [];
   let cursor = to;
   while (cursor !== from) {
     const step = parents.get(cursor);
     if (!step) break;
     codePoints.push(step.codePoint);
+    sets.push(step.set);
     spans.push(step.span);
     cursor = step.from;
   }
   codePoints.reverse();
+  sets.reverse();
   spans.reverse();
-  return { codePoints, spans };
+  return { codePoints, sets, spans };
 }
 
 /** Shortest input that drives the automaton from `from` to `to`. */
@@ -183,7 +216,7 @@ function shortestInput(nfa: NFA, from: number, to: number): number[] | null {
     for (const t of nfa.transitions[q]) {
       if (seen.has(t.to)) continue;
       seen.add(t.to);
-      parents.set(t.to, { from: q, codePoint: t.set.sample(), span: { start: t.start, end: t.end } });
+      parents.set(t.to, { from: q, codePoint: t.set.sample(), set: t.set, span: { start: t.start, end: t.end } });
       if (t.to === to) return reconstruct(parents, from, to).codePoints;
       queue.push(t.to);
     }
@@ -191,7 +224,15 @@ function shortestInput(nfa: NFA, from: number, to: number): number[] | null {
   return null;
 }
 
+/** Transitions with a negative offset belong to the synthetic search loop, not the source. */
+function sourceSpan(...edges: { start: number; end: number }[]): SourceSpan {
+  const real = edges.filter((e) => e.start >= 0);
+  if (real.length === 0) return { start: -1, end: -1 };
+  return { start: Math.min(...real.map((e) => e.start)), end: Math.max(...real.map((e) => e.end)) };
+}
+
 function spanOf(spans: SourceSpan[]): SourceSpan | null {
+  spans = spans.filter((s) => s.start >= 0);
   if (spans.length === 0) return null;
   let start = Infinity;
   let end = -Infinity;
@@ -210,6 +251,7 @@ interface ProductEdge {
   from: number;
   to: number;
   codePoint: number;
+  set: CharSet;
   span: SourceSpan;
   /** True when the two components did not take the same transition in the same way. */
   divergent: boolean;
@@ -233,7 +275,7 @@ interface ProductEdge {
 function findExponentialAmbiguity(
   nfa: NFA,
   budget: { remaining: number },
-): { witness: Witness; hotspot: SourceSpan | null } | null {
+): { witness: Witness; hotspot: SourceSpan | null }[] {
   const n = nfa.stateCount;
   const encode = (a: number, b: number) => a * n + b;
 
@@ -271,11 +313,12 @@ function findExponentialAmbiguity(
           from: id,
           to: next,
           codePoint: shared.sample(),
+          set: shared,
           span: { start: Math.min(t1.start, t2.start), end: Math.max(t1.end, t2.end) },
           divergent,
         });
         if (!adjacency.has(next)) {
-          if (budget.remaining-- <= 0) return null;
+          if (budget.remaining-- <= 0) return [];
           adjacency.set(next, []);
           queue.push(next);
         }
@@ -310,7 +353,11 @@ function findExponentialAmbiguity(
     }
   }
 
+  // Every exponential loop, not just the first: which one can be driven to
+  // failure depends on what surrounds it, and that is for measurement to say.
+  const found: { witness: Witness; hotspot: SourceSpan | null }[] = [];
   for (const [comp, diagonalId] of diagonalOf) {
+    if (found.length >= 3) break;
     const edge = divergentIn.get(comp);
     if (!edge) continue;
 
@@ -326,12 +373,12 @@ function findExponentialAmbiguity(
     const pump = [...legIn.codePoints, edge.codePoint, ...legOut.codePoints];
     if (pump.length === 0) continue;
 
-    return {
-      witness: { prefix, pump, pumpStates: [pumpState] },
+    found.push({
+      witness: { prefix, pump, pumpStates: [pumpState], pumpSets: [...legIn.sets, edge.set, ...legOut.sets], retried: false },
       hotspot: spanOf([...legIn.spans, edge.span, ...legOut.spans]),
-    };
+    });
   }
-  return null;
+  return found;
 }
 
 /** `productPath`, but an empty walk is a valid answer when the ends coincide. */
@@ -340,8 +387,8 @@ function pathWithin(
   from: number,
   to: number,
   allowed: (id: number) => boolean,
-): { codePoints: number[]; spans: SourceSpan[] } | null {
-  if (from === to) return { codePoints: [], spans: [] };
+): Path | null {
+  if (from === to) return { codePoints: [], sets: [], spans: [] };
   return productPath(adjacency, from, to, allowed);
 }
 
@@ -356,7 +403,7 @@ function productPath(
   from: number,
   to: number,
   allowed: (id: number) => boolean,
-): { codePoints: number[]; spans: SourceSpan[] } | null {
+): Path | null {
   if (from === to) throw new Error("productPath requires distinct endpoints");
   const parents = new Map<number, StepInfo>();
   const seen = new Set<number>([from]);
@@ -367,12 +414,12 @@ function productPath(
     for (const edge of adjacency.get(id) ?? []) {
       if (!allowed(edge.to)) continue;
       if (edge.to === to) {
-        parents.set(to, { from: id, codePoint: edge.codePoint, span: edge.span });
+        parents.set(to, { from: id, codePoint: edge.codePoint, set: edge.set, span: edge.span });
         return reconstruct(parents, from, to);
       }
       if (seen.has(edge.to)) continue;
       seen.add(edge.to);
-      parents.set(edge.to, { from: id, codePoint: edge.codePoint, span: edge.span });
+      parents.set(edge.to, { from: id, codePoint: edge.codePoint, set: edge.set, span: edge.span });
       queue.push(edge.to);
     }
   }
@@ -397,7 +444,7 @@ function findPumpBetween(
   q2: number,
   component: Int32Array,
   budget: { remaining: number },
-): { codePoints: number[]; spans: SourceSpan[] } | null {
+): Path | null {
   const n = nfa.stateCount;
   const encode = (a: number, b: number, c: number) => (a * n + b) * n + c;
   const start = encode(q1, q1, q2);
@@ -431,7 +478,8 @@ function findPumpBetween(
           parents.set(next, {
             from: id,
             codePoint: shared.sample(),
-            span: { start: Math.min(t1.start, t2.start, t3.start), end: Math.max(t1.end, t2.end, t3.end) },
+            set: shared,
+            span: sourceSpan(t1, t2, t3),
           });
           if (next === target) return reconstruct(parents, start, target);
           if (budget.remaining-- <= 0) return null;
@@ -500,14 +548,28 @@ function longestChain(
   return { length: overall.length, path: overall.path, cyclic: false };
 }
 
+interface PolynomialCandidate {
+  degree: number;
+  witness: Witness;
+  hotspot: SourceSpan | null;
+}
+
 function findPolynomialAmbiguity(
   nfa: NFA,
   budget: { remaining: number },
-): { degree: number; witness: Witness; hotspot: SourceSpan | null } | null {
+  searchState: number | null,
+  trustFirstAttempt: boolean,
+): PolynomialCandidate[] {
   const { members, component } = cycleStates(nfa);
-  if (members.size < 2) return null;
+  if (members.size < 2) return [];
 
   const pumps = [...members].sort((a, b) => a - b);
+
+  // A retry only repeats work if the attempt can fail. If the loop it enters
+  // passes through an unconditionally accepting state, the attempt matches
+  // and the search stops: `(ab)*` and `\d+` are found at the first offset.
+  const succeedingComponents = new Set<number>();
+  for (const q of nfa.acceptsUnconditionally) succeedingComponents.add(component[q]);
 
   // Chains are grouped by pump word. A chain q1 → q2 → q3 whose two links
   // needed *different* words is real ambiguity, but no single string
@@ -516,12 +578,15 @@ function findPolynomialAmbiguity(
   // exponent and the generated witness describing the same attack.
   const byWord = new Map<
     string,
-    { edges: Map<number, number[]>; nodes: Set<number>; word: { codePoints: number[]; spans: SourceSpan[] } }
+    { edges: Map<number, number[]>; nodes: Set<number>; word: Path }
   >();
 
   for (const q1 of pumps) {
     for (const q2 of pumps) {
       if (q1 === q2) continue;
+      // A retry that reaches an unconditionally accepting loop simply
+      // succeeds; the search never gets to repeat the work.
+      if (q1 === searchState && succeedingComponents.has(component[q2])) continue;
       const found = findPumpBetween(nfa, q1, q2, component, budget);
       if (!found || found.codePoints.length === 0) continue;
 
@@ -537,25 +602,77 @@ function findPolynomialAmbiguity(
       group.nodes.add(q2);
     }
   }
-  if (byWord.size === 0) return null;
-
-  let best: { degree: number; witness: Witness; hotspot: SourceSpan | null } | null = null;
+  const candidates: PolynomialCandidate[] = [];
   for (const group of byWord.values()) {
-    const chain = longestChain([...group.nodes], group.edges);
+    let chain = longestChain([...group.nodes], group.edges);
+
+    // The search loop only earns its link if the attempt at offset 0 fails.
+    // If pumping reaches an unconditional accept, that attempt matches and
+    // there is no second offset: drop the loop and keep what remains.
+    if (trustFirstAttempt && searchState !== null && chain.path[0] === searchState && firstAttemptSucceeds(nfa, searchState, group.word.codePoints, chain.length + 2)) {
+      group.nodes.delete(searchState);
+      group.edges.delete(searchState);
+      if (group.nodes.size < 2) continue;
+      chain = longestChain([...group.nodes], group.edges);
+    }
     if (chain.cyclic) continue; // an IDA cycle implies EDA, already checked
-    if (best !== null && chain.length <= best.degree) continue;
 
     const head = chain.path[0];
     const prefix = shortestInput(nfa, nfa.initial, head);
     if (prefix === null) continue;
 
-    best = {
+    candidates.push({
       degree: chain.length,
-      witness: { prefix, pump: group.word.codePoints, pumpStates: chain.path },
+      witness: { prefix, pump: group.word.codePoints, pumpStates: chain.path, pumpSets: group.word.sets, retried: chain.path[0] === searchState },
       hotspot: spanOf(group.word.spans),
-    };
+    });
   }
-  return best;
+  // Highest degree first; among equals, the shorter pump is the clearer attack.
+  return candidates.sort((a, b) => b.degree - a.degree || a.witness.pump.length - b.witness.pump.length);
+}
+
+/**
+ * Run the single attempt that starts at offset 0 over pump^repetitions and
+ * report whether it ever reaches an unconditionally accepting state.
+ */
+function firstAttemptSucceeds(nfa: NFA, searchState: number, pump: number[], repetitions: number): boolean {
+  // The search state's non-loop edges are exactly the original initial state's.
+  let current = new Set<number>([searchState]);
+  const accepts = (states: Set<number>) => [...states].some((q) => q !== searchState && nfa.acceptsUnconditionally.has(q));
+  for (let r = 0; r < repetitions; r++) {
+    for (const cp of pump) {
+      const next = new Set<number>();
+      for (const q of current) {
+        for (const t of nfa.transitions[q]) {
+          if (t.start < 0) continue; // do not follow the retry loop itself
+          if (t.set.has(cp)) next.add(t.to);
+        }
+      }
+      if (next.size === 0) return false;
+      if (accepts(next)) return true;
+      current = next;
+    }
+  }
+  return false;
+}
+
+/**
+ * Σ*·A: a new initial state that loops on every character and can also start
+ * the pattern. Its self-loop is marked with a negative source offset so it
+ * never shows up in a hotspot or in the attack alphabet.
+ */
+function withSearchLoop(nfa: NFA): { nfa: NFA; searchState: number } {
+  const searchState = nfa.stateCount;
+  const loop = { set: CharSet.all(), to: searchState, start: -1, end: -1, multiPath: false };
+  const transitions = [...nfa.transitions, [loop, ...nfa.transitions[nfa.initial]]];
+  const accepting = new Set(nfa.accepting);
+  const acceptsUnconditionally = new Set(nfa.acceptsUnconditionally);
+  if (accepting.has(nfa.initial)) accepting.add(searchState);
+  if (acceptsUnconditionally.has(nfa.initial)) acceptsUnconditionally.add(searchState);
+  return {
+    nfa: { ...nfa, stateCount: nfa.stateCount + 1, initial: searchState, transitions, accepting, acceptsUnconditionally },
+    searchState,
+  };
 }
 
 /* ------------------------------------------------------------------ *
@@ -565,24 +682,48 @@ function findPolynomialAmbiguity(
 export function analyze(nfa: NFA, options: AnalysisOptions = {}): AnalysisResult {
   const budget = { remaining: options.maxProductStates ?? DEFAULT_MAX_PRODUCT_STATES };
 
-  const exponential = findExponentialAmbiguity(nfa, budget);
+  // The search loop cannot create exponential ambiguity (nothing returns to
+  // it), so EDA is decided on the plain automaton, which is smaller.
+  const exponentials = findExponentialAmbiguity(nfa, budget);
+  const exponential = exponentials[0];
+
+  // `^` pins the first attempt; `y` forbids later ones.
+  // A pattern that can match the empty string unconditionally succeeds at
+  // offset 0 and is never retried either.
+  const retried =
+    !nfa.anchoredStart &&
+    !nfa.pattern.flags.includes("y") &&
+    !nfa.acceptsUnconditionally.has(nfa.initial) &&
+    options.searchLoop !== false;
+  const searched = retried ? withSearchLoop(nfa) : { nfa, searchState: null };
+  // The first-attempt check reads `^` as ε, so a success that goes through a
+  // `^` branch may be one only offset 0 can have: in `^\W+|\W+$` a leading
+  // "Z" defeats it and every later retry takes the `\W+$` branch.
+  let pinnedBranch = false;
+  walk(nfa.pattern.root, (node) => {
+    if (node.type === "Assertion" && node.kind === "^") pinnedBranch = true;
+  });
+  const polynomial = findPolynomialAmbiguity(searched.nfa, budget, searched.searchState, !pinnedBranch).filter((c) => c.degree >= 2);
+
   if (exponential) {
     return {
       verdict: "exponential",
       degree: Infinity,
       witness: exponential.witness,
+      alternatives: [...exponentials.slice(1).map((e) => e.witness), ...polynomial.slice(0, 2).map((c) => c.witness)],
       hotspot: exponential.hotspot,
       truncated: false,
     };
   }
 
-  const polynomial = findPolynomialAmbiguity(nfa, budget);
-  if (polynomial && polynomial.degree >= 2) {
+  if (polynomial.length > 0) {
+    const [best, ...rest] = polynomial;
     return {
       verdict: "polynomial",
-      degree: polynomial.degree,
-      witness: polynomial.witness,
-      hotspot: polynomial.hotspot,
+      degree: best.degree,
+      witness: best.witness,
+      alternatives: rest.slice(0, 2).map((c) => c.witness),
+      hotspot: best.hotspot ?? polynomial.find((c) => c.hotspot)?.hotspot ?? null,
       truncated: budget.remaining <= 0,
     };
   }
@@ -591,6 +732,7 @@ export function analyze(nfa: NFA, options: AnalysisOptions = {}): AnalysisResult
     verdict: "safe",
     degree: 1,
     witness: null,
+    alternatives: [],
     hotspot: null,
     truncated: budget.remaining <= 0,
   };

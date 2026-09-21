@@ -7,100 +7,39 @@
  * exploitable at all. So the attack is run for real, on an escalating ladder
  * of input sizes, and the growth rate is fitted from the numbers that come
  * back. "1.98^n, 512ms at n=26" is a fact; "possibly vulnerable" is not.
+ *
+ * This file owns the Node process harness. The fitting lives in `growth.ts`
+ * so other runtimes reach identical verdicts.
  */
 
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import type { Attack } from "./witness.ts";
 import { renderAttack } from "./witness.ts";
+import {
+  classify,
+  EXPONENTIAL_LADDER,
+  POLYNOMIAL_LADDER,
+  SEVERITY,
+  SIGNIFICANT_MS,
+  STOP_MS,
+  type DynamicResult,
+  type TimingSample,
+} from "./growth.ts";
 
-const PROBE_PATH = fileURLToPath(new URL("./probe.ts", import.meta.url));
+export { projectMs, repetitionsToExceed } from "./growth.ts";
+export type { DynamicResult, Growth, TimingSample } from "./growth.ts";
 
-/** Below this, the reading is scheduler noise rather than signal. */
-const SIGNIFICANT_MS = 0.5;
-/** How hard a single match has to be before escalation stops. */
-const STOP_MS = 150;
-
-/**
- * Small repetition counts, stepping by one.
- *
- * The window between "too fast to time" and "too slow to finish" is narrow
- * when the base is large — at 4× per repetition it is barely five rungs wide —
- * so the ladder is fine-grained rather than spaced. Rungs are cheap: the probe
- * stops climbing as soon as one match exceeds `STOP_MS`.
- */
-const EXPONENTIAL_LADDER = Array.from({ length: 45 }, (_, i) => i + 4);
-/** Large repetition counts, geometric, to expose an exponent. */
-const POLYNOMIAL_LADDER = [250, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000];
-
-export type Growth = "constant" | "linear" | "polynomial" | "exponential" | "unknown";
-
-export interface TimingSample {
-  repetitions: number;
-  length: number;
-  ms: number;
-  matched: boolean;
-  timedOut: boolean;
-}
-
-export interface DynamicResult {
-  growth: Growth;
-  /** Measured base for exponential growth, per repetition. */
-  base: number | null;
-  /** Measured exponent for polynomial growth, against input length. */
-  exponent: number | null;
-  /** R² of the winning fit, 0..1. */
-  fitQuality: number | null;
-  /** The attack that hurt most, or null when none could be built. */
-  attack: Attack | null;
-  samples: TimingSample[];
-  /** The largest input that was actually measured. */
-  worst: TimingSample | null;
-  /** True when the engine had to be killed — the strongest possible signal. */
-  timedOut: boolean;
-  engineError: string | null;
-}
+// Running from source, the probe is TypeScript; from the published package
+// it is compiled JavaScript, because Node will not strip types under node_modules.
+const FROM_SOURCE = import.meta.url.endsWith(".ts");
+const PROBE_PATH = fileURLToPath(new URL(FROM_SOURCE ? "./probe.ts" : "./probe.js", import.meta.url));
 
 export interface DynamicOptions {
   /** Wall-clock budget per attack candidate. */
   timeoutMs?: number;
   /** Skip the large-input ladder. Useful when only exponential matters. */
   skipPolynomialLadder?: boolean;
-}
-
-interface Regression {
-  slope: number;
-  intercept: number;
-  r2: number;
-}
-
-/** Ordinary least squares, plus the coefficient of determination. */
-function regress(xs: number[], ys: number[]): Regression | null {
-  const n = xs.length;
-  if (n < 3) return null;
-
-  const meanX = xs.reduce((a, b) => a + b, 0) / n;
-  const meanY = ys.reduce((a, b) => a + b, 0) / n;
-
-  let sxy = 0;
-  let sxx = 0;
-  for (let i = 0; i < n; i++) {
-    sxy += (xs[i] - meanX) * (ys[i] - meanY);
-    sxx += (xs[i] - meanX) ** 2;
-  }
-  if (sxx === 0) return null;
-
-  const slope = sxy / sxx;
-  const intercept = meanY - slope * meanX;
-
-  let ssRes = 0;
-  let ssTot = 0;
-  for (let i = 0; i < n; i++) {
-    ssRes += (ys[i] - (intercept + slope * xs[i])) ** 2;
-    ssTot += (ys[i] - meanY) ** 2;
-  }
-  const r2 = ssTot === 0 ? 1 : 1 - ssRes / ssTot;
-  return { slope, intercept, r2 };
 }
 
 function runLadder(
@@ -122,7 +61,7 @@ function runLadder(
 
   const args: string[] = ["--no-warnings"];
   // Type stripping is only on by default from Node 23.
-  if (Number(process.versions.node.split(".")[0]) < 23) args.push("--experimental-strip-types");
+  if (FROM_SOURCE && Number(process.versions.node.split(".")[0]) < 23) args.push("--experimental-strip-types");
   args.push(PROBE_PATH, request);
 
   const result = spawnSync(process.execPath, args, {
@@ -173,60 +112,6 @@ function runLadder(
 
   return { samples, timedOut: killed, engineError };
 }
-
-function classify(samples: TimingSample[]): {
-  growth: Growth;
-  base: number | null;
-  exponent: number | null;
-  fitQuality: number | null;
-} {
-  const timedOut = samples.some((s) => s.timedOut);
-  const usable = samples.filter((s) => !s.timedOut && s.ms >= SIGNIFICANT_MS);
-
-  // A kill on a short input is conclusive on its own: no polynomial of a
-  // reasonable degree takes seconds on a few dozen characters.
-  const killedEarly = timedOut && samples[samples.length - 1].repetitions <= 64;
-
-  const exponentialFit = regress(
-    usable.map((s) => s.repetitions),
-    usable.map((s) => Math.log(s.ms)),
-  );
-  const polynomialFit = regress(
-    usable.map((s) => Math.log(s.length)),
-    usable.map((s) => Math.log(s.ms)),
-  );
-
-  const base = exponentialFit ? Math.exp(exponentialFit.slope) : null;
-  const exponent = polynomialFit ? polynomialFit.slope : null;
-
-  if (killedEarly) {
-    return { growth: "exponential", base, exponent: null, fitQuality: exponentialFit?.r2 ?? null };
-  }
-  if (base !== null && base >= 1.2 && (exponentialFit?.r2 ?? 0) >= 0.85) {
-    return { growth: "exponential", base, exponent: null, fitQuality: exponentialFit!.r2 };
-  }
-  if (timedOut) {
-    return { growth: "polynomial", base: null, exponent, fitQuality: polynomialFit?.r2 ?? null };
-  }
-  if (exponent !== null && exponent >= 1.6 && (polynomialFit?.r2 ?? 0) >= 0.85) {
-    return { growth: "polynomial", base: null, exponent, fitQuality: polynomialFit!.r2 };
-  }
-  if (usable.length === 0) {
-    return { growth: "constant", base: null, exponent: null, fitQuality: null };
-  }
-  if (exponent !== null && exponent >= 0.6) {
-    return { growth: "linear", base: null, exponent, fitQuality: polynomialFit?.r2 ?? null };
-  }
-  return { growth: "constant", base: null, exponent, fitQuality: polynomialFit?.r2 ?? null };
-}
-
-const SEVERITY: Record<Growth, number> = {
-  exponential: 4,
-  polynomial: 3,
-  linear: 2,
-  constant: 1,
-  unknown: 0,
-};
 
 /**
  * Try each candidate attack and keep the one that does the most damage.
@@ -295,56 +180,32 @@ export function verify(
 }
 
 /**
- * Extrapolate the fitted curve to a repetition count that was never run.
+ * Does `rewrite` stay linear under a set of attacks?
  *
- * Useful for reports — "8 seconds at n = 40" lands harder than a slope — but
- * it is an extrapolation, and callers should present it as one.
- */
-export function projectMs(result: DynamicResult, repetitions: number): number | null {
-  const reference = result.samples.find((s) => !s.timedOut && s.ms >= SIGNIFICANT_MS);
-  if (!reference) return null;
-
-  if (result.growth === "exponential" && result.base !== null) {
-    return reference.ms * result.base ** (repetitions - reference.repetitions);
-  }
-  if (result.growth === "polynomial" && result.exponent !== null && reference.repetitions > 0) {
-    return reference.ms * (repetitions / reference.repetitions) ** result.exponent;
-  }
-  return null;
-}
-
-/**
- * The smallest attack that would cost at least `ms`.
+ * Used to check a suggested fix. Unlike `verify`, this does not trust any
+ * static verdict: it renders each attack at a large size and times the rewrite
+ * directly, in a killable process. A fix that redoscope's model cannot see
+ * through — an atomic group behind a lookahead — is still caught here, because
+ * a still-quadratic rewrite blows past the budget on a 100k-character input.
  *
- * Inverting the curve reads far better than evaluating it: "1 second of CPU
- * from 29 characters of input" is a threat model, whereas "74647 seconds at
- * n=21" is a number nobody can act on.
+ * Returns true only when every attack finishes comfortably and the largest
+ * input is no worse than mildly super-linear.
  */
-export function repetitionsToExceed(
-  result: DynamicResult,
-  ms: number,
-  pumpLength: number,
-): { repetitions: number; characters: number } | null {
-  const reference = result.samples.find((s) => !s.timedOut && s.ms >= SIGNIFICANT_MS);
-  if (!reference) return null;
-
-  let repetitions: number;
-  if (result.growth === "exponential" && result.base !== null && result.base > 1) {
-    repetitions =
-      reference.repetitions + Math.log(ms / reference.ms) / Math.log(result.base);
-  } else if (result.growth === "polynomial" && result.exponent !== null && result.exponent > 0) {
-    repetitions = reference.repetitions * (ms / reference.ms) ** (1 / result.exponent);
-  } else {
-    return null;
+export function measureRewrite(source: string, flags: string, attacks: Attack[]): boolean {
+  const SIZES = [25_000, 100_000];
+  const BUDGET_MS = 400;
+  for (const attack of attacks) {
+    if (attack.pump.length === 0) continue;
+    const repetitions = SIZES.map((size) => Math.max(1, Math.floor(size / attack.pump.length)));
+    const { samples, timedOut } = runLadder(source, flags, attack, repetitions, 2000);
+    if (timedOut) return false;
+    const done = samples.filter((s) => !s.timedOut);
+    if (done.length < repetitions.length) return false; // a rung did not return
+    const worst = done[done.length - 1];
+    if (worst.ms > BUDGET_MS) return false;
+    // Quadratic between 25k and 100k (16× the work) shows as a large ratio.
+    const first = done[0];
+    if (first.ms > 1 && worst.ms / first.ms > 6) return false;
   }
-
-  if (!Number.isFinite(repetitions) || repetitions <= 0) return null;
-  const rounded = Math.ceil(repetitions);
-  // Beyond this the extrapolation is well past anything measured, and an
-  // attacker who needs a gigabyte of input does not have a useful attack.
-  if (rounded * pumpLength > 100_000_000) return null;
-
-  const base = result.samples[0];
-  const overhead = base ? base.length - base.repetitions * pumpLength : 0;
-  return { repetitions: rounded, characters: rounded * pumpLength + Math.max(0, overhead) };
+  return true;
 }

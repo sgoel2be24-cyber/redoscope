@@ -32,7 +32,7 @@ test("finds exponential ambiguity in the classic offenders", () => {
 });
 
 test("finds polynomial ambiguity and reports the right degree", () => {
-  const quadratic = run("a*a*b");
+  const quadratic = run("^a*a*b");
   assert.equal(quadratic.verdict, "polynomial");
   assert.equal(quadratic.degree, 2);
 
@@ -40,9 +40,33 @@ test("finds polynomial ambiguity and reports the right degree", () => {
   assert.equal(alsoQuadratic.verdict, "polynomial");
   assert.equal(alsoQuadratic.degree, 2);
 
-  const cubic = run("a*a*a*b");
+  const cubic = run("^a*a*a*b");
   assert.equal(cubic.verdict, "polynomial");
   assert.equal(cubic.degree, 3);
+});
+
+test("an unanchored pattern pays once more for every offset the engine retries", () => {
+  // Unambiguous as a single attempt, quadratic as a search: every one of n
+  // attempts runs to the end of the whitespace before failing.
+  const search = run("\\s*,\\s*");
+  assert.equal(search.verdict, "polynomial");
+  assert.equal(search.degree, 2);
+  assert.deepEqual(search.witness!.prefix, []);
+
+  // The retry multiplies the ambiguity that was already there.
+  assert.equal(run("a*a*b").degree, 3);
+
+  // Pinned or sticky patterns are attempted once.
+  check("^\\s*,\\s*", "safe");
+  check("\\s*,\\s*", "safe", "y");
+
+  // An attempt that can succeed is not retried: these match at offset 0.
+  check("\\d+", "safe");
+  check("(ab)*", "safe");
+  check("\\s*", "safe");
+
+  // ...but an anchor, unlike plain acceptance, can still fail.
+  assert.equal(run("\\s*$").verdict, "polynomial");
 });
 
 test("does not cry wolf on ordinary patterns", () => {
@@ -58,16 +82,24 @@ test("does not cry wolf on ordinary patterns", () => {
     "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$",
     "(?:ab|cd)+",
     "^-?\\d+(\\.\\d+)?$",
-    "\\/\\*[\\s\\S]*?\\*\\/",
+    "^\\/\\*[\\s\\S]*?\\*\\/",
     "^#[0-9a-fA-F]{6}$",
-    "(a|b|c)+d",
+    "^(a|b|c)+d",
     // Disjoint alternatives cannot be ambiguous, however alarming they look.
     "^(\\s|\\w)+$",
     // Overlapping prefixes are not enough either: after 'a' the two branches
     // need different next characters, so the pair of paths dies immediately.
-    "(a|ab)+c",
+    "^(a|ab)+c",
   ];
   for (const src of safe) check(src, "safe");
+
+  // The same shapes unanchored are genuinely quadratic, and V8 agrees: on
+  // "a"×n + "!" each of the n retries consumes the rest of the run before
+  // failing. `(a|b|c)+d` measures 30, 119, 481, 1909 ms at n = 5k…40k.
+  // Earlier versions of this suite asserted these were safe.
+  for (const src of ["(a|b|c)+d", "(a|ab)+c", "\\/\\*[\\s\\S]*?\\*\\/"]) {
+    assert.equal(check(src, "polynomial").degree, 2, src);
+  }
 });
 
 test("the i flag can create ambiguity that is absent without it", () => {

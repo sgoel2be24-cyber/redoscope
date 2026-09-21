@@ -1,0 +1,14 @@
+{
+  "name": "eslint-plugin-redoscope",
+  "version": "0.3.0",
+  "description": "ESLint rule that flags regexes which can be made to backtrack catastrophically (ReDoS), using redoscope's automaton analysis.",
+  "type": "module",
+  "main": "index.js",
+  "exports": { ".": "./index.js" },
+  "files": ["index.js", "README.md"],
+  "keywords": ["eslint", "eslintplugin", "redos", "regex", "security", "cwe-1333"],
+  "peerDependencies": { "eslint": ">=8" },
+  "dependencies": { "redoscope": "^0.3.0" },
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/sgoel2be24-cyber/redoscope.git", "directory": "eslint-plugin-redoscope" }
+}

@@ -1,0 +1,80 @@
+{
+  "generated": "2026-09-16T18:05:47.720Z",
+  "node": "v26.8.2",
+  "judge": {
+    "maxChars": 50000,
+    "slowMs": 1000
+  },
+  "corpus": {
+    "advisories": 152,
+    "releasePairs": 225,
+    "noRegexLiteralChanged": 81,
+    "diffTooLargeToAttribute": 4,
+    "attributable": 140,
+    "confirmedByJudge": 116,
+    "confirmedRobust": 56,
+    "confirmedBorderline": 60,
+    "regexesEvaluated": 428,
+    "regexesConfirmed": 153,
+    "regexesConfirmedRobust": 74
+  },
+  "tools": {
+    "redoscope": {
+      "flagged": 175,
+      "truePositives": 149,
+      "falsePositives": 26,
+      "falseNegatives": 4,
+      "precision": 0.8514285714285714,
+      "recall": 0.9738562091503268,
+      "recallRobust": 0.972972972972973,
+      "advisoriesDetected": 115,
+      "advisoriesDetectedRobust": 55,
+      "medianMs": 17.171875,
+      "p95Ms": 4069.8799169999547,
+      "errors": 2
+    },
+    "redoscope-capped": {
+      "flagged": 144,
+      "truePositives": 139,
+      "falsePositives": 5,
+      "falseNegatives": 14,
+      "precision": 0.9652777777777778,
+      "recall": 0.9084967320261438,
+      "recallRobust": 0.8918918918918919,
+      "advisoriesDetected": 111,
+      "advisoriesDetectedRobust": 55,
+      "medianMs": 17.171875,
+      "p95Ms": 4069.8799169999547,
+      "errors": 2
+    },
+    "recheck": {
+      "flagged": 179,
+      "truePositives": 150,
+      "falsePositives": 29,
+      "falseNegatives": 3,
+      "precision": 0.8379888268156425,
+      "recall": 0.9803921568627451,
+      "recallRobust": 0.9594594594594594,
+      "advisoriesDetected": 116,
+      "advisoriesDetectedRobust": 56,
+      "medianMs": 5.258792000007816,
+      "p95Ms": 1143.3127499999828,
+      "errors": 3
+    },
+    "safe-regex": {
+      "flagged": 134,
+      "truePositives": 70,
+      "falsePositives": 64,
+      "falseNegatives": 83,
+      "precision": 0.5223880597014925,
+      "recall": 0.45751633986928103,
+      "recallRobust": 0.6756756756756757,
+      "advisoriesDetected": 56,
+      "advisoriesDetectedRobust": 37,
+      "medianMs": 0.15762499999254942,
+      "p95Ms": 0.805915999924764,
+      "errors": 0
+    }
+  },
+  "residualSlowRegexesInPatchedReleases": 44
+}

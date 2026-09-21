@@ -1,0 +1,57 @@
+{
+  "generated": "2026-09-16T12:58:07.030Z",
+  "node": "v26.8.2",
+  "judge": {
+    "maxChars": 50000,
+    "slowMs": 1000
+  },
+  "corpus": {
+    "advisories": 152,
+    "releasePairs": 225,
+    "noRegexLiteralChanged": 81,
+    "diffTooLargeToAttribute": 4,
+    "attributable": 140,
+    "confirmedByJudge": 77,
+    "regexesEvaluated": 428,
+    "regexesConfirmed": 100
+  },
+  "tools": {
+    "redoscope": {
+      "flagged": 82,
+      "truePositives": 66,
+      "falsePositives": 16,
+      "falseNegatives": 34,
+      "precision": 0.8048780487804879,
+      "recall": 0.66,
+      "advisoriesDetected": 43,
+      "medianMs": 0.1829169999109581,
+      "p95Ms": 1007.3759169999976,
+      "errors": 2
+    },
+    "recheck": {
+      "flagged": 179,
+      "truePositives": 98,
+      "falsePositives": 81,
+      "falseNegatives": 2,
+      "precision": 0.547486033519553,
+      "recall": 0.98,
+      "advisoriesDetected": 77,
+      "medianMs": 5.333290999988094,
+      "p95Ms": 1073.9387920000008,
+      "errors": 3
+    },
+    "safe-regex": {
+      "flagged": 134,
+      "truePositives": 56,
+      "falsePositives": 78,
+      "falseNegatives": 44,
+      "precision": 0.417910447761194,
+      "recall": 0.56,
+      "advisoriesDetected": 43,
+      "medianMs": 0.1531669999822043,
+      "p95Ms": 0.690708000009181,
+      "errors": 0
+    }
+  },
+  "residualSlowRegexesInPatchedReleases": 26
+}

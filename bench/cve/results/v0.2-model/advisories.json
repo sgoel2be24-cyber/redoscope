@@ -1,0 +1,4444 @@
+[
+  {
+    "advisory": "GHSA-hjcp-j389-59ff",
+    "cve": "CVE-2015-8854",
+    "package": "marked",
+    "vulnerable": "0.3.3",
+    "patched": "0.3.4",
+    "regexes": [
+      {
+        "source": "^ *(`{3,}|~{3,}) *(\\S+)? *\\n([\\s\\S]+?)\\s*\\1 *(?:\\n+|$)",
+        "flags": "",
+        "where": "package/lib/marked.js:78",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 39491,
+          "ms": 1396.070125,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1887.8915829999987
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial (fuzz)",
+            "ms": 1555.2331250000025
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.3949160000011034
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1887.8915829999987
+          }
+        }
+      },
+      {
+        "source": "^\\b_((?:__|[\\s\\S])+?)_\\b|^\\*((?:\\*\\*|[\\s\\S])+?)\\*(?!\\*)",
+        "flags": "",
+        "where": "package/lib/marked.js:457",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 40,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": false,
+            "detail": "exponential/constant",
+            "ms": 242.29295900000216
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/4th degree polynomial (fuzz)",
+            "ms": 1.9889579999980924
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.5122499999997672
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "exponential/constant",
+            "ms": 242.29295900000216
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-c9f4-xj24-8jqx",
+    "cve": "CVE-2015-8858",
+    "package": "uglify-js",
+    "vulnerable": "2.5.0",
+    "patched": "2.6.0",
+    "regexes": [
+      {
+        "source": "^\\d*\\.?\\d*(?:e[+-]?\\d*(?:\\d\\.?|\\.?\\d)\\d*)?$",
+        "flags": "i",
+        "where": "package/lib/parse.js:62",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 2225,
+          "ms": 1681.444625,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 3070.874708000003
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 11.1684580000001
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.3353330000027199
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 3070.874708000003
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-832h-xg76-4gv6",
+    "cve": "CVE-2017-18077",
+    "package": "brace-expansion",
+    "vulnerable": "1.1.6",
+    "patched": "1.1.7",
+    "regexes": [
+      {
+        "source": "^(.*,)+(.+)?$",
+        "flags": "",
+        "where": "package/index.js:109",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 26,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 558.7954580000005
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 3.646832999998878
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.12537500000325963
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 558.7954580000005
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-762f-c2wg-m8c8",
+    "cve": "CVE-2018-3738",
+    "package": "protobufjs",
+    "vulnerable": "6.8.5",
+    "patched": "6.8.6",
+    "regexes": [
+      {
+        "source": "^(?:\\.?[a-zA-Z_][a-zA-Z_0-9]*)+$",
+        "flags": "",
+        "where": "package/dist/protobuf-light.js:432",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 26,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 449.4991669999945
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 0.5930410000000848
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.14866699998674449
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 449.4991669999945
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-762f-c2wg-m8c8",
+    "cve": "CVE-2018-3738",
+    "package": "protobufjs",
+    "vulnerable": "5.0.2",
+    "patched": "5.0.3",
+    "regexes": [
+      {
+        "source": "^(?:\\.?[a-zA-Z_][a-zA-Z_0-9]*)+$",
+        "flags": "",
+        "where": "package/dist/protobuf-light.js:432",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 26,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 449.4991669999945
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 0.5930410000000848
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.14866699998674449
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 449.4991669999945
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-qhv9-728r-6jqg",
+    "cve": "CVE-2016-1000232",
+    "package": "tough-cookie",
+    "vulnerable": "2.2.2",
+    "patched": "2.3.0",
+    "regexes": [
+      {
+        "source": "\\s*;\\s*",
+        "flags": "",
+        "where": "package/lib/cookie.js:381",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1077.727666,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1889.8722080000007
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.4809580000001006
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.09299999999348074
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1889.8722080000007
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-xmc8-cjfr-phx3",
+    "cve": "CVE-2018-20801",
+    "package": "highcharts",
+    "vulnerable": "6.0.7",
+    "patched": "6.1.0",
+    "regexes": [
+      {
+        "source": "<.*class=\"([^\"]+)\".*>",
+        "flags": "",
+        "where": "package/highcharts.js:67",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 5693,
+          "ms": 1417.690667,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1249.8404169999994
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 56.46870800000033
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.2525830000085989
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1249.8404169999994
+          }
+        }
+      },
+      {
+        "source": "<.*style=\"([^\"]+)\".*>",
+        "flags": "",
+        "where": "package/highcharts.js:67",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 5693,
+          "ms": 1265.687875,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1300.0511249999981
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 54.29387500000303
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.2222079999919515
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1300.0511249999981
+          }
+        }
+      },
+      {
+        "source": "<.*href=\"([^\"]+)\".*>",
+        "flags": "",
+        "where": "package/highcharts.js:67",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 5123,
+          "ms": 1110.872792,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1198.909124999991
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 51.03116700000828
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.3427499999961583
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1198.909124999991
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-wxhq-pm8v-cw75",
+    "cve": null,
+    "package": "clean-css",
+    "vulnerable": "4.1.10",
+    "patched": "4.1.11",
+    "regexes": [
+      {
+        "source": "\\s*!important$",
+        "flags": "",
+        "where": "package/lib/optimizer/level-2/remove-unused-at-rules.js:11",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49366,
+          "ms": 1062.595917,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1968.6525419999962
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 4.549125000005006
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.15891600000031758
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1968.6525419999962
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-ch52-vgq2-943f",
+    "cve": null,
+    "package": "marked",
+    "vulnerable": "0.6.3",
+    "patched": "0.7.0",
+    "regexes": [
+      {
+        "source": "^ {0,3}(`{3,}|~{3,})([^`\\n]*)\\n(?:|([\\s\\S]*?)\\n)(?: {0,3}\\1[~`]* *(?:\\n+|$)|$)",
+        "flags": "",
+        "where": "package/lib/marked.js:94",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49359,
+          "ms": 1006.602916,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 708.8675829999993
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial (fuzz)",
+            "ms": 1487.2683749999997
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.36120800000207964
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 708.8675829999993
+          }
+        }
+      },
+      {
+        "source": "^ *(#{1,6}) +([^\\n]+?) *#* *(?:\\n+|$)",
+        "flags": "",
+        "where": "package/lib/marked.js:96",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 2227,
+          "ms": 1648.957292,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": false,
+            "detail": "polynomial/constant",
+            "ms": 240.87720799999806
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 36.01512499999808
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.44808300000295276
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/constant",
+            "ms": 240.87720799999806
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-w8qv-6jwh-64r5",
+    "cve": "CVE-2021-23364",
+    "package": "browserslist",
+    "vulnerable": "4.16.4",
+    "patched": "4.16.5",
+    "regexes": [
+      {
+        "source": "^(>=?|<=?)\\s*(\\d*\\.?\\d+)%\\s+in\\s+(\\S+)\\s+stats$",
+        "flags": "",
+        "where": "package/index.js:855",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49364,
+          "ms": 1430.941625,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 320.32333300000755
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 11.548790999979246
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.30375000002095476
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 320.32333300000755
+          }
+        }
+      },
+      {
+        "source": "^(>=?|<=?)\\s*(\\d*\\.?\\d+)%\\s+in\\s+((alt-)?\\w\\w)$",
+        "flags": "",
+        "where": "package/index.js:890",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49358,
+          "ms": 1057.634459,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1617.045207999996
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 18.331082999997307
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.4696659999899566
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1617.045207999996
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-468q-v4jj-485h",
+    "cve": "CVE-2021-3804",
+    "package": "@tarojs/helper",
+    "vulnerable": "3.3.8",
+    "patched": "3.3.9",
+    "regexes": [
+      {
+        "source": "^(?:(?:(?:https?|ftp):)?\\/\\/)(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))\\.?)(?::\\d{2,5})?(?:[/?#]\\S*)?$",
+        "flags": "i",
+        "where": "package/dist/constants.js:100",
+        "judge": {
+          "confirmed": true,
+          "by": "redoscope",
+          "length": 77,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 613.1400830000057
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial (fuzz)",
+            "ms": 853.1928330000082
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 2.741208999999799
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 613.1400830000057
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-vvf2-ppj9-pp49",
+    "cve": "CVE-2021-3794",
+    "package": "@vuelidate/validators",
+    "vulnerable": "2.0.0-alpha.21",
+    "patched": "2.0.0-alpha.22",
+    "regexes": [
+      {
+        "source": "^(?:(?:https?|ftp):\\/\\/)(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))(?::\\d{2,5})?(?:[/?#]\\S*)?$",
+        "flags": "i",
+        "where": "package/dist/index.esm.js:632",
+        "judge": {
+          "confirmed": true,
+          "by": "redoscope",
+          "length": 81,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 600.3205000000016
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial (fuzz)",
+            "ms": 1154.0436669999908
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 1.168999999994412
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 600.3205000000016
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-44c6-4v22-4mhx",
+    "cve": "CVE-2021-3795",
+    "package": "semver-regex",
+    "vulnerable": "3.1.2",
+    "patched": "3.1.3",
+    "regexes": [
+      {
+        "source": "(?<=^v?|\\sv?)(?:(?:0|[1-9]\\d*)\\.){2}(?:0|[1-9]\\d*)(?:-(?:0|[1-9]\\d*|[\\da-z-]*[a-z-][\\da-z-]*)(?:\\.(?:0|[1-9]\\d*|[\\da-z-]*[a-z-][\\da-z-]*))*)?(?:\\+[\\da-z-]+(?:\\.[\\da-z-]+)*)?\\b",
+        "flags": "gi",
+        "where": "package/index.js:2",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 81,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": false,
+            "detail": "exponential/constant",
+            "ms": 730.8848329999892
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential (fuzz)",
+            "ms": 36.76237499999115
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.6006669999915175
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "exponential/constant",
+            "ms": 730.8848329999892
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": false,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-44c6-4v22-4mhx",
+    "cve": "CVE-2021-3795",
+    "package": "semver-regex",
+    "vulnerable": "4.0.0",
+    "patched": "4.0.1",
+    "regexes": [
+      {
+        "source": "(?<=^v?|\\sv?)(?:(?:0|[1-9]\\d*)\\.){2}(?:0|[1-9]\\d*)(?:-(?:0|[1-9]\\d*|[\\da-z-]*[a-z-][\\da-z-]*)(?:\\.(?:0|[1-9]\\d*|[\\da-z-]*[a-z-][\\da-z-]*))*)?(?:\\+[\\da-z-]+(?:\\.[\\da-z-]+)*)?\\b",
+        "flags": "gi",
+        "where": "package/index.js:2",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 81,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": false,
+            "detail": "exponential/constant",
+            "ms": 730.8848329999892
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential (fuzz)",
+            "ms": 36.76237499999115
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.6006669999915175
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "exponential/constant",
+            "ms": 730.8848329999892
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": false,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-rp65-9cf3-cjxr",
+    "cve": "CVE-2021-3803",
+    "package": "nth-check",
+    "vulnerable": "2.0.0",
+    "patched": "2.0.1",
+    "regexes": [
+      {
+        "source": "^([+-]?\\d*n)?\\s*(?:([+-]?)\\s*(\\d+))?$",
+        "flags": "",
+        "where": "package/lib/parse.js:6",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1060.123708,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1376.0633329999982
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.9292500000155997
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.11941699997987598
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1376.0633329999982
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-x55w-vjjp-222r",
+    "cve": "CVE-2021-3820",
+    "package": "i",
+    "vulnerable": "0.3.6",
+    "patched": "0.3.7",
+    "regexes": [
+      {
+        "source": ".*\\.",
+        "flags": "",
+        "where": "package/lib/methods.js:231",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1144.752209,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1169.9147909999883
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 3.174249999981839
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.12266700001782738
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1169.9147909999883
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-hhfg-6hfc-rvxm",
+    "cve": "CVE-2021-3822",
+    "package": "jsoneditor",
+    "vulnerable": "9.5.5",
+    "patched": "9.5.6",
+    "regexes": [
+      {
+        "source": "\\s*\\n\\s*",
+        "flags": "g",
+        "where": "package/src/node.js:86",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1071.132459,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 2284.013290999981
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.6202500000072177
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.10408299998380244
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 2284.013290999981
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-hf66-r44g-p7j9",
+    "cve": "CVE-2021-23446",
+    "package": "handsontable",
+    "vulnerable": "9.0.2",
+    "patched": "10.0.0",
+    "regexes": [
+      {
+        "source": "^\\s*[+-.]?\\s*(?:(?:\\d+(?:(\\.|,)\\d+)?(?:e[+-]?\\d+)?)|(?:0x[a-f\\d]+))\\s*$",
+        "flags": "",
+        "where": "package/core.js:1241",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49355,
+          "ms": 1066.13825,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1977.307334000012
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 7.920249999995576
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.2513749999925494
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1977.307334000012
+          }
+        }
+      },
+      {
+        "source": "^\\s*[+-]?\\s*(?:(?:\\d+(?:\\.\\d+)?(?:e[+-]?\\d+)?)|(?:0x[a-f\\d]+))\\s*$",
+        "flags": "i",
+        "where": "package/dist/handsontable.full.min.js:51",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 39485,
+          "ms": 1165.477084,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 945.8211669999873
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 9.064000000013039
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.22554099999251775
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 945.8211669999873
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-55xv-f85c-248q",
+    "cve": "CVE-2021-43838",
+    "package": "jsx-slack",
+    "vulnerable": "4.5.0",
+    "patched": "4.5.1",
+    "regexes": [
+      {
+        "source": "^((?:<.*?>)*)(&gt;)",
+        "flags": "gm",
+        "where": "package/lib/index.js:3",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 62,
+          "ms": 2164.231125,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 685.1145419999957
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 8.529874999949243
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.10862499999348074
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 685.1145419999957
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-rrrm-qjm4-v8hf",
+    "cve": "CVE-2022-21680",
+    "package": "marked",
+    "vulnerable": "4.0.9",
+    "patched": "4.0.10",
+    "regexes": [
+      {
+        "source": "^ {0,3}\\[(label)\\]: *\\n? *<?([^\\s>]+)>?(?:(?: +\\n? *| *\\n *)(title))? *(?:\\n+|$)",
+        "flags": "",
+        "where": "package/lib/marked.cjs:1202",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 2788,
+          "ms": 1442.999542,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1214.561624999973
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 201.14441700000316
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.5614170000189915
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1214.561624999973
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-5v2h-r2cx-5xgj",
+    "cve": "CVE-2022-21681",
+    "package": "marked",
+    "vulnerable": "4.0.9",
+    "patched": "4.0.10",
+    "regexes": [
+      {
+        "source": "^ {0,3}\\[(label)\\]: *\\n? *<?([^\\s>]+)>?(?:(?: +\\n? *| *\\n *)(title))? *(?:\\n+|$)",
+        "flags": "",
+        "where": "package/lib/marked.cjs:1202",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 2788,
+          "ms": 1442.999542,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1214.561624999973
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 201.14441700000316
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.5614170000189915
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1214.561624999973
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-44pw-h2cw-w3vq",
+    "cve": "CVE-2022-29167",
+    "package": "hawk",
+    "vulnerable": "9.0.0",
+    "patched": "9.0.1",
+    "regexes": [
+      {
+        "source": "^(?:(?:\\r\\n)?\\s)*((?:[^:]+)|(?:\\[[^\\]]+\\]))(?::(\\d+))?(?:(?:\\r\\n)?\\s)*$",
+        "flags": "",
+        "where": "package/lib/utils.js:23",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 79,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": false,
+            "detail": "exponential/constant",
+            "ms": 241.54149999999208
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 7.348165999981575
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.16858300002058968
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "exponential/constant",
+            "ms": 241.54149999999208
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": false,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-j9m2-h2pv-wvph",
+    "cve": "CVE-2021-43306",
+    "package": "jquery-validation",
+    "vulnerable": "1.19.3",
+    "patched": "1.19.4",
+    "regexes": [
+      {
+        "source": "^(https?|ftp):\\/\\/(((([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(%[\\da-f]{2})|[!\\$&'\\(\\)\\*\\+,;=]|:)*@)?(((\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5]))|((([a-z]|\\d|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(([a-z]|\\d|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])*([a-z]|\\d|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])))\\.)*(([a-z]|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(([a-z]|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])*([a-z]|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])))\\.?)(:\\d*)?)(\\/((([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(%[\\da-f]{2})|[!\\$&'\\(\\)\\*\\+,;=]|:|@)+(\\/(([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(%[\\da-f]{2})|[!\\$&'\\(\\)\\*\\+,;=]|:|@)*)*)?)?(\\?((([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(%[\\da-f]{2})|[!\\$&'\\(\\)\\*\\+,;=]|:|@)|[\\uE000-\\uF8FF]|\\/|\\?)*)?(#((([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(%[\\da-f]{2})|[!\\$&'\\(\\)\\*\\+,;=]|:|@)|\\/|\\?)*)?$",
+        "flags": "i",
+        "where": "package/dist/additional-methods.js:1446",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 57,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 753.4595419999969
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential (fuzz)",
+            "ms": 165.43779100000393
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 1.201375000004191
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 753.4595419999969
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-4x5v-gmq8-25ch",
+    "cve": "CVE-2021-43307",
+    "package": "semver-regex",
+    "vulnerable": "3.1.3",
+    "patched": "3.1.4",
+    "regexes": [
+      {
+        "source": "(?:(?<=^v?|\\sv?)(?:(?:0|[1-9]\\d{0,9})\\.){2}(?:0|[1-9]\\d{0,9})(?:-(?:0|[1-9]\\d*?|[\\da-z-]*?[a-z-][\\da-z-]*?){0,100}(?:\\.(?:0|[1-9]\\d*?|[\\da-z-]*?[a-z-][\\da-z-]*?))*?){0,100}(?:\\+[\\da-z-]+?(?:\\.[\\da-z-]+?)*?){0,100}\\b){1,200}",
+        "flags": "gi",
+        "where": "package/index.js:2",
+        "judge": {
+          "confirmed": true,
+          "by": "redoscope",
+          "length": 22,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 518.7046249999839
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential (fuzz)",
+            "ms": 24.775124999985565
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.37829100000089966
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 518.7046249999839
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-4x5v-gmq8-25ch",
+    "cve": "CVE-2021-43307",
+    "package": "semver-regex",
+    "vulnerable": "4.0.2",
+    "patched": "4.0.3",
+    "regexes": [
+      {
+        "source": "(?:(?<=^v?|\\sv?)(?:(?:0|[1-9]\\d{0,9})\\.){2}(?:0|[1-9]\\d{0,9})(?:-(?:0|[1-9]\\d*?|[\\da-z-]*?[a-z-][\\da-z-]*?){0,100}(?:\\.(?:0|[1-9]\\d*?|[\\da-z-]*?[a-z-][\\da-z-]*?))*?){0,100}(?:\\+[\\da-z-]+?(?:\\.[\\da-z-]+?)*?){0,100}\\b){1,200}",
+        "flags": "gi",
+        "where": "package/index.js:2",
+        "judge": {
+          "confirmed": true,
+          "by": "redoscope",
+          "length": 22,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 518.7046249999839
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential (fuzz)",
+            "ms": 24.775124999985565
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.37829100000089966
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 518.7046249999839
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-fp36-299x-pwmw",
+    "cve": "CVE-2022-1929",
+    "package": "devcert",
+    "vulnerable": "1.2.0",
+    "patched": "1.2.1",
+    "regexes": [
+      {
+        "source": "^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.?)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$",
+        "flags": "i",
+        "where": "package/dist/constants.js:13",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 51,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 386.4532079999917
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential (fuzz)",
+            "ms": 11.95350000000326
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.20375000004423782
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 386.4532079999917
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-7mwh-4pqv-wmr8",
+    "cve": "CVE-2022-25758",
+    "package": "scss-tokenizer",
+    "vulnerable": "0.4.2",
+    "patched": "0.4.3",
+    "regexes": [
+      {
+        "source": "\\/\\*\\s*# sourceMappingURL=(.*)\\s*\\*\\/",
+        "flags": "",
+        "where": "package/lib/previous-map.js:63",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 25574,
+          "ms": 1396.584083,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1133.8044579999987
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 130.62904100003652
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.21845899999607354
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1133.8044579999987
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-ffmh-x56j-9rc3",
+    "cve": "CVE-2022-31147",
+    "package": "jquery-validation",
+    "vulnerable": "1.19.4",
+    "patched": "1.19.5",
+    "regexes": [
+      {
+        "source": "^(?:(?:(?:https?|ftp):)?\\/\\/)(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z0-9\\u00a1-\\uffff][a-z0-9\\u00a1-\\uffff_-]{0,62})?[a-z0-9\\u00a1-\\uffff]\\.?)+(?:[a-z\\u00a1-\\uffff]{2,}\\.?))(?::\\d{2,5})?(?:[/?#]\\S*)?$",
+        "flags": "i",
+        "where": "package/dist/additional-methods.js:1446",
+        "judge": {
+          "confirmed": true,
+          "by": "redoscope",
+          "length": 32,
+          "ms": 2185.058291,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 421.8163749999949
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial (fuzz)",
+            "ms": 847.3962499999907
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.8377080000354908
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 421.8163749999949
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-cj88-88mr-972w",
+    "cve": "CVE-2021-35065",
+    "package": "glob-parent",
+    "vulnerable": "6.0.0",
+    "patched": "6.0.1",
+    "regexes": [
+      {
+        "source": "[{[].*\\/.*[}\\]]$",
+        "flags": "",
+        "where": "package/index.js:9",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 2777,
+          "ms": 1339.096666,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 3258.7378749999916
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 1.2417499999864958
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.17191600002115592
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 3258.7378749999916
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-vp56-6g26-6827",
+    "cve": "CVE-2022-2596",
+    "package": "node-fetch",
+    "vulnerable": "3.2.9",
+    "patched": "3.2.10",
+    "regexes": [
+      {
+        "source": "^(.+\\.)*localhost$",
+        "flags": "",
+        "where": "package/src/utils/referrer.js:122",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 61,
+          "ms": 1430.654583,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 562.609999999986
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 2.592250000045169
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.13337500003399327
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 562.609999999986
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-chw2-6c7r-37p7",
+    "cve": "CVE-2021-43309",
+    "package": "uri-template-lite",
+    "vulnerable": "22.1.0",
+    "patched": "22.9.0",
+    "regexes": [
+      {
+        "source": "\\{([#&+.\\/;?]?)((?:[-\\w%.]+(\\*|:\\d+)?,?)+)\\}",
+        "flags": "g",
+        "where": "package/index.js:24",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 29,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 443.3318750000326
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 6.187541999970563
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.17620899999747053
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 443.3318750000326
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-p28h-cc7q-c4fg",
+    "cve": "CVE-2022-21222",
+    "package": "css-what",
+    "vulnerable": "2.1.2",
+    "patched": "2.1.3",
+    "regexes": [
+      {
+        "source": "^\\s*((?:\\\\.|[\\w\\u00c0-\\uFFFF\\-])+)\\s*(?:(\\S?)=\\s*(?:(['\"])([^]*?)\\3|(#?(?:\\\\.|[\\w\\u00c0-\\uFFFF\\-])*)|)|)\\s*(i)?\\]",
+        "flags": "",
+        "where": "package/index.js:8",
+        "judge": {
+          "confirmed": true,
+          "by": "redoscope",
+          "length": 1391,
+          "ms": 1165.369334,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1580.7141669999692
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial (fuzz)",
+            "ms": 1178.2255839999998
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.3511249999864958
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1580.7141669999692
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-xrx9-gj26-5wx9",
+    "cve": "CVE-2022-35923",
+    "package": "v8n",
+    "vulnerable": "1.5.0",
+    "patched": "1.5.1",
+    "regexes": [
+      {
+        "source": "^([a-z]+\\s*)+$",
+        "flags": "",
+        "where": "package/dist/v8n.amd.js:412",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 26,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 686.4181659999886
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 0.5544579999987036
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.10116700001526624
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 686.4181659999886
+          }
+        }
+      },
+      {
+        "source": "^([A-Z]+\\s*)+$",
+        "flags": "",
+        "where": "package/dist/v8n.amd.js:414",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 26,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 646.9236249999958
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 0.6330000000307336
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.1194590000086464
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 646.9236249999958
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-j5p7-jf4q-742q",
+    "cve": "CVE-2015-10005",
+    "package": "markdown-it",
+    "vulnerable": "2.2.1",
+    "patched": "3.0.0",
+    "regexes": [
+      {
+        "source": "<!--([^-]+|[-][^-]+)*-->",
+        "flags": "",
+        "where": "package/dist/markdown-it.js:2245",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 65,
+          "ms": 5074.746333,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 674.1111249999958
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 9.433332999993581
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.13129099999787286
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 674.1111249999958
+          }
+        }
+      },
+      {
+        "source": "<!\\[CDATA\\[([^\\]]+|\\][^\\]]|\\]\\][^>])*\\]\\]>",
+        "flags": "",
+        "where": "package/dist/markdown-it.js:2248",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 34,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 706.3243329999968
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 22.76150000002235
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.15108300000429153
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 706.3243329999968
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-pfrm-4rjw-g9q5",
+    "cve": "CVE-2021-4299",
+    "package": "string-kit",
+    "vulnerable": "0.12.7",
+    "patched": "0.12.8",
+    "regexes": [
+      {
+        "source": "(^([\\w ]+,?[\\w ]+)?[\\w ]+,?[\\w ]+\\d+:\\d+(:\\d+)?[\\w ]?|^\\d{1,4}[/-]\\d{1,4}[/-]\\d{1,4}|^\\w+, \\w+ \\d+, \\d{4})",
+        "flags": "",
+        "where": "package/lib/naturalSort.js:39",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 171,
+          "ms": 1697.649375,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 5987.596790999989
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/5th degree polynomial",
+            "ms": 2067.1034999999683
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.25412499997764826
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 5987.596790999989
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-9vvw-cc9w-f27h",
+    "cve": "CVE-2017-20165",
+    "package": "debug",
+    "vulnerable": "2.6.8",
+    "patched": "2.6.9",
+    "regexes": [
+      {
+        "source": "\\s*\\n\\s*",
+        "flags": "g",
+        "where": "package/src/node.js:86",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1071.132459,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 2284.013290999981
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.6202500000072177
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.10408299998380244
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 2284.013290999981
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-9vvw-cc9w-f27h",
+    "cve": "CVE-2017-20165",
+    "package": "debug",
+    "vulnerable": "3.0.1",
+    "patched": "3.1.0",
+    "regexes": [
+      {
+        "source": "\\s*\\n\\s*",
+        "flags": "g",
+        "where": "package/src/node.js:86",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1071.132459,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 2284.013290999981
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.6202500000072177
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.10408299998380244
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 2284.013290999981
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-qv66-f876-vjvr",
+    "cve": "CVE-2018-25074",
+    "package": "skeemas",
+    "vulnerable": "1.2.4",
+    "patched": "1.2.5",
+    "regexes": [
+      {
+        "source": "^(?:([a-z0-9+.-]+:\\/\\/)((?:(?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(:(?:\\d*))?(\\/(?:[a-z0-9-._~!$&'()*+,;=:@\\/]|%[0-9A-F]{2})*)?|([a-z0-9+.-]+:)(\\/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@\\/]|%[0-9A-F]{2})*)?)(\\?(?:[a-z0-9-._~!$&'()*+,;=:\\/?@]|%[0-9A-F]{2})*)?(#(?:[a-z0-9-._~!$&'()*+,;=:\\/?@]|%[0-9A-F]{2})*)?$",
+        "flags": "i",
+        "where": "package/validators/base.js:10",
+        "judge": {
+          "confirmed": true,
+          "by": "redoscope",
+          "length": 39489,
+          "ms": 1440.805833,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 4126.147417000029
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 748.463208000001
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.5223750000004657
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 4126.147417000029
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-qjm7-55vv-3c5f",
+    "cve": "CVE-2018-25077",
+    "package": "mel-spintax",
+    "vulnerable": "1.0.2",
+    "patched": "1.0.3",
+    "regexes": [
+      {
+        "source": "{.*(\\|.*)+}",
+        "flags": "",
+        "where": "package/lib/spintax.js:37",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 30,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 668.5165839999681
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 0.9993329999851994
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.07816700002877042
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 668.5165839999681
+          }
+        }
+      },
+      {
+        "source": "({[^}]*\\|)|(\\|[^{]*})",
+        "flags": "",
+        "where": "package/lib/spintax.js:155",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49355,
+          "ms": 1127.152291,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 719.875708000036
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.447000000043772
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.13270799996098503
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 719.875708000036
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-rc47-6667-2j5j",
+    "cve": "CVE-2022-25881",
+    "package": "http-cache-semantics",
+    "vulnerable": "4.1.0",
+    "patched": "4.1.1",
+    "regexes": [
+      {
+        "source": "\\s*=\\s*",
+        "flags": "",
+        "where": "package/index.js:84",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1067.917291,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1843.990374999994
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.4177079999935813
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.08887500001583248
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1843.990374999994
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-c2jc-4fpr-4vhg",
+    "cve": "CVE-2023-25166",
+    "package": "@sideway/formula",
+    "vulnerable": "3.0.0",
+    "patched": "3.0.1",
+    "regexes": [
+      {
+        "source": "^(?:[0-9]*\\.?[0-9]*){1}$",
+        "flags": "",
+        "where": "package/lib/index.js:16",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 31588,
+          "ms": 1439.468542,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1072.9632090000086
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 1.370541000040248
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.11875000002328306
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1072.9632090000086
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-gpvj-gp8c-c7p2",
+    "cve": "CVE-2019-25103",
+    "package": "simple-markdown",
+    "vulnerable": "0.5.1",
+    "patched": "0.5.2",
+    "regexes": [
+      {
+        "source": "^ *(#{1,6}) *([^\\n]+?) *#* *(?:\\n *)+\\n",
+        "flags": "",
+        "where": "package/simple-markdown.js:838",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 357,
+          "ms": 1369.447083,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1036.461958000029
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/4th degree polynomial",
+            "ms": 9.366125000000466
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.12225000001490116
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1036.461958000029
+          }
+        }
+      },
+      {
+        "source": "^ *(`{3,}|~{3,}) *(\\S+)? *\\n([\\s\\S]+?)\\s*\\1 *(?:\\n *)+\\n",
+        "flags": "",
+        "where": "package/simple-markdown.js:938",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 39490,
+          "ms": 1349.262709,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1090.8530419999734
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial (fuzz)",
+            "ms": 1364.131457999989
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.15200000000186265
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1090.8530419999734
+          }
+        }
+      },
+      {
+        "source": "^~~(?=\\S)((?:\\\\[\\s\\S]|~(?!~)|[^\\s\\\\~]|\\s+(?!~~))+?)~~",
+        "flags": "",
+        "where": "package/simple-markdown.js:1567",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 34,
+          "ms": 3101.218792,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 395.9342919999617
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential (fuzz)",
+            "ms": 7.489667000016198
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.14883399999234825
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 395.9342919999617
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-c2qf-rxjj-qqgw",
+    "cve": "CVE-2022-25883",
+    "package": "semver",
+    "vulnerable": "6.3.0",
+    "patched": "6.3.1",
+    "regexes": [
+      {
+        "source": "\\s*\\|\\|\\s*",
+        "flags": "",
+        "where": "package/semver.js:866",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 39484,
+          "ms": 1453.936041,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 982.4402080000145
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 3.009499999927357
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.09762500005308539
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 982.4402080000145
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-c2qf-rxjj-qqgw",
+    "cve": "CVE-2022-25883",
+    "package": "semver",
+    "vulnerable": "5.7.1",
+    "patched": "5.7.2",
+    "regexes": [
+      {
+        "source": "\\s*\\|\\|\\s*",
+        "flags": "",
+        "where": "package/semver.js:866",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 39484,
+          "ms": 1453.936041,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 982.4402080000145
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 3.009499999927357
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.09762500005308539
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 982.4402080000145
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-j8xg-fqg3-53r7",
+    "cve": "CVE-2023-26115",
+    "package": "word-wrap",
+    "vulnerable": "1.2.3",
+    "patched": "1.2.4",
+    "regexes": [
+      {
+        "source": "[ \\t]*$",
+        "flags": "gm",
+        "where": "package/index.js:39",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 31589,
+          "ms": 1045.962833,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 876.6435000000056
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.3604999999515712
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.11904200003482401
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 876.6435000000056
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-4q6p-r6v2-jvc5",
+    "cve": "CVE-2023-43646",
+    "package": "get-func-name",
+    "vulnerable": "2.0.0",
+    "patched": "2.0.1",
+    "regexes": [
+      {
+        "source": "\\s*function(?:\\s|\\s*\\/\\*[^(?:*\\/)]+\\*\\/\\s*)*([^\\s\\(\\/]+)",
+        "flags": "",
+        "where": "package/get-func-name.js:24",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 78,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 909.0255839999882
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 50.2394590000622
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.13783299992792308
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 909.0255839999882
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-m95q-7qp3-xv42",
+    "cve": "CVE-2023-4316",
+    "package": "zod",
+    "vulnerable": "3.22.2",
+    "patched": "3.22.3",
+    "regexes": [
+      {
+        "source": "^([A-Z0-9_+-]+\\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9\\-]*\\.)+[A-Z]{2,}$",
+        "flags": "i",
+        "where": "package/lib/index.mjs:835",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 27,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 866.173375000013
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 3.082791999913752
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.18091699993237853
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 866.173375000013
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-9h6g-pr28-7cqp",
+    "cve": null,
+    "package": "nodemailer",
+    "vulnerable": "6.9.8",
+    "patched": "6.9.9",
+    "regexes": [
+      {
+        "source": "(<img\\b[^>]* src\\s*=[\\s\"']*)(data:([^;]+);[^\"'>\\s]+)",
+        "flags": "gi",
+        "where": "package/lib/mailer/index.js:398",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 19184,
+          "ms": 1705.195,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 207.13616599998204
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 1053.3945829999866
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.27000000001862645
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 207.13616599998204
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-4gmj-3p3h-gm8h",
+    "cve": "CVE-2024-27088",
+    "package": "es5-ext",
+    "vulnerable": "0.10.62",
+    "patched": "0.10.63",
+    "regexes": [
+      {
+        "source": "^\\s*function\\s*([\\0-')-\\uffff]+)*\\s*\\(([\\0-(*-\\uffff]*)\\)\\s*\\{",
+        "flags": "",
+        "where": "package/function/#/copy.js:5",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 35,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 796.7501249999623
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 11.28208299994003
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.16595799999777228
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 796.7501249999623
+          }
+        }
+      },
+      {
+        "source": "^\\s*\\(?([\\0-'*-\\uffff]*)\\)?\\s*=>\\s*(\\{?[\\0-\\uffff]*\\}?)\\s*$",
+        "flags": "",
+        "where": "package/function/#/to-string-tokens.js:6",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 2220,
+          "ms": 1765.946666,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 868.1976659999928
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 3.2698749999981374
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.9327500000363216
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 868.1976659999928
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-3phv-83cj-p8p7",
+    "cve": "CVE-2020-26309",
+    "package": "nope-validator",
+    "vulnerable": "0.12.0",
+    "patched": "0.12.1",
+    "regexes": [
+      {
+        "source": "^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$",
+        "flags": "i",
+        "where": "package/lib/amd/nope-validator.js:688",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 66,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 487.2942500000354
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 360.4982079999754
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.5960839999606833
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 487.2942500000354
+          }
+        }
+      },
+      {
+        "source": "^((https?|ftp):)?\\/\\/(((([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(%[\\da-f]{2})|[!\\$&'\\(\\)\\*\\+,;=]|:)*@)?(((\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5]))|((([a-z]|\\d|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(([a-z]|\\d|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])*([a-z]|\\d|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])))\\.)+(([a-z]|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(([a-z]|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])*([a-z]|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])))\\.?)(:\\d*)?)(\\/((([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(%[\\da-f]{2})|[!\\$&'\\(\\)\\*\\+,;=]|:|@)+(\\/(([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(%[\\da-f]{2})|[!\\$&'\\(\\)\\*\\+,;=]|:|@)*)*)?)?(\\?((([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(%[\\da-f]{2})|[!\\$&'\\(\\)\\*\\+,;=]|:|@)|[\\uE000-\\uF8FF]|\\/|\\?)*)?(\\#((([a-z]|\\d|-|\\.|_|~|[\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF])|(%[\\da-f]{2})|[!\\$&'\\(\\)\\*\\+,;=]|:|@)|\\/|\\?)*)?$",
+        "flags": "i",
+        "where": "package/lib/amd/nope-validator.js:689",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 53,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 1022.9384579999605
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential (fuzz)",
+            "ms": 161.9297090000473
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.9680830000434071
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 1022.9384579999605
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-7q7g-4xm8-89cq",
+    "cve": "CVE-2024-21539",
+    "package": "@eslint/plugin-kit",
+    "vulnerable": "0.2.2",
+    "patched": "0.2.3",
+    "regexes": [
+      {
+        "source": "\\s*([:,])\\s*",
+        "flags": "gu",
+        "where": "package/dist/cjs/index.cjs:98",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1176.031125,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 2114.50549999997
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.881749999942258
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.13854199997149408
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 2114.50549999997
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-593f-38f6-jp5m",
+    "cve": "CVE-2025-25200",
+    "package": "koa",
+    "vulnerable": "2.15.3",
+    "patched": "2.15.4",
+    "regexes": [
+      {
+        "source": "\\s*,\\s*",
+        "flags": "",
+        "where": "package/dist/cjs/middleware/cors/index.js:82",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1078.324916,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1843.9910420000087
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.459250000072643
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.09416700003203005
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1843.9910420000087
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-593f-38f6-jp5m",
+    "cve": "CVE-2025-25200",
+    "package": "koa",
+    "vulnerable": "3.0.0-alpha.2",
+    "patched": "3.0.0-alpha.3",
+    "regexes": [
+      {
+        "source": "\\s*,\\s*",
+        "flags": "",
+        "where": "package/dist/cjs/middleware/cors/index.js:82",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1078.324916,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1843.9910420000087
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.459250000072643
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.09416700003203005
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1843.9910420000087
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-593f-38f6-jp5m",
+    "cve": "CVE-2025-25200",
+    "package": "koa",
+    "vulnerable": "1.7.0",
+    "patched": "1.7.1",
+    "regexes": [
+      {
+        "source": "\\s*,\\s*",
+        "flags": "",
+        "where": "package/dist/cjs/middleware/cors/index.js:82",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1078.324916,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1843.9910420000087
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.459250000072643
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.09416700003203005
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1843.9910420000087
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-593f-38f6-jp5m",
+    "cve": "CVE-2025-25200",
+    "package": "koa",
+    "vulnerable": "0.21.1",
+    "patched": "0.21.2",
+    "regexes": [
+      {
+        "source": "\\s*,\\s*",
+        "flags": "",
+        "where": "package/dist/cjs/middleware/cors/index.js:82",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1078.324916,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1843.9910420000087
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.459250000072643
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.09416700003203005
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1843.9910420000087
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-x4c5-c7rf-jjgv",
+    "cve": "CVE-2025-25285",
+    "package": "@octokit/endpoint",
+    "vulnerable": "9.0.5",
+    "patched": "9.0.6",
+    "regexes": [
+      {
+        "source": "^\\W+|\\W+$",
+        "flags": "g",
+        "where": "package/dist-bundle/index.js:107",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49358,
+          "ms": 1071.136,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": false,
+            "detail": "safe/unmeasured",
+            "ms": 0.226208999985829
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 3.2820000000065193
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.1126249999506399
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "safe/unmeasured",
+            "ms": 0.226208999985829
+          }
+        }
+      },
+      {
+        "source": "[\\w-]+(?=-preview)",
+        "flags": "g",
+        "where": "package/dist-bundle/index.js:293",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 32345,
+          "ms": 1032.121625,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1136.7427499999758
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial (fuzz)",
+            "ms": 34.71308300003875
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.15645900007802993
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1136.7427499999758
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-x4c5-c7rf-jjgv",
+    "cve": "CVE-2025-25285",
+    "package": "@octokit/endpoint",
+    "vulnerable": "10.1.2",
+    "patched": "10.1.3",
+    "regexes": [
+      {
+        "source": "^\\W+|\\W+$",
+        "flags": "g",
+        "where": "package/dist-bundle/index.js:107",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49358,
+          "ms": 1071.136,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": false,
+            "detail": "safe/unmeasured",
+            "ms": 0.226208999985829
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 3.2820000000065193
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.1126249999506399
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "safe/unmeasured",
+            "ms": 0.226208999985829
+          }
+        }
+      },
+      {
+        "source": "[\\w-]+(?=-preview)",
+        "flags": "g",
+        "where": "package/dist-bundle/index.js:293",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 32345,
+          "ms": 1032.121625,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1136.7427499999758
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial (fuzz)",
+            "ms": 34.71308300003875
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.15645900007802993
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1136.7427499999758
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-3p6v-hrg8-8qj7",
+    "cve": "CVE-2025-2792",
+    "package": "@mozilla/readability",
+    "vulnerable": "0.5.0",
+    "patched": "0.6.0",
+    "regexes": [
+      {
+        "source": "[^\\|\\-\\\\\\/>»]*[\\|\\-\\\\\\/>»](.*)",
+        "flags": "gi",
+        "where": "package/Readability.js:489",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49355,
+          "ms": 1141.816584,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 674.7414169999538
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 3.557541999965906
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.193000000086613
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 674.7414169999538
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-p9wx-2529-fp83",
+    "cve": "CVE-2018-25110",
+    "package": "marked",
+    "vulnerable": "0.3.16",
+    "patched": "0.3.17",
+    "regexes": [
+      {
+        "source": "<tag(?:\"[^\"]*\"|'[^']*'|\\s[^'\"\\/>]*)*?\\/?>",
+        "flags": "",
+        "where": "package/lib/marked.js:58",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 31,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 498.859417000087
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 32.464208999997936
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.13529100001323968
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 498.859417000087
+          }
+        }
+      },
+      {
+        "source": "^<!--[\\s\\S]*?-->|^<\\/?[a-zA-Z0-9\\-]+(?:\"[^\"]*\"|'[^']*'|\\s[^<'\">\\/]*)*?\\/?>",
+        "flags": "",
+        "where": "package/lib/marked.js:465",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 29,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 526.2681249999441
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 107.28174999996554
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.1743329999735579
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 526.2681249999441
+          }
+        }
+      },
+      {
+        "source": "^!?\\[((?:\\[[^\\]]*\\]|\\\\[\\[\\]]|[^\\[\\]])*)\\]",
+        "flags": "",
+        "where": "package/lib/marked.js:468",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 122,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 369.12274999998044
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 1.9393749999580905
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.1586669998941943
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 369.12274999998044
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-vqpr-j7v3-hqw9",
+    "cve": "CVE-2025-66020",
+    "package": "valibot",
+    "vulnerable": "1.1.0",
+    "patched": "1.2.0",
+    "regexes": [
+      {
+        "source": "^(?:[\\u{1F1E6}-\\u{1F1FF}]{2}|\\u{1F3F4}[\\u{E0061}-\\u{E007A}]{2}[\\u{E0030}-\\u{E0039}\\u{E0061}-\\u{E007A}]{1,3}\\u{E007F}|(?:\\p{Emoji}\\uFE0F\\u20E3?|\\p{Emoji_Modifier_Base}\\p{Emoji_Modifier}?|\\p{Emoji_Presentation})(?:\\u200D(?:\\p{Emoji}\\uFE0F\\u20E3?|\\p{Emoji_Modifier_Base}\\p{Emoji_Modifier}?|\\p{Emoji_Presentation}))*)+$",
+        "flags": "u",
+        "where": "package/dist/index.cjs:679",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 74,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 838.1100829999195
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 20.717666000011377
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.026749999960884452
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 838.1100829999195
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-rchf-xwx2-hm93",
+    "cve": "CVE-2025-68475",
+    "package": "@fedify/fedify",
+    "vulnerable": "1.6.12",
+    "patched": "1.6.13",
+    "regexes": [
+      {
+        "source": "<(a|link)((\\s+[a-z][a-z:_-]*=(\"[^\"]*\"|'[^']*'|[^\\s>]+))+)\\s*\\/?>",
+        "flags": "gi",
+        "where": "package/dist/docloader-Byq_mQp_.js:4629",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 520,
+          "ms": 1643.458,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 629.3294169999426
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 321.9261669999687
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.3085830000927672
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 629.3294169999426
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-rchf-xwx2-hm93",
+    "cve": "CVE-2025-68475",
+    "package": "@fedify/fedify",
+    "vulnerable": "1.7.13",
+    "patched": "1.7.14",
+    "regexes": [
+      {
+        "source": "<(a|link)((\\s+[a-z][a-z:_-]*=(\"[^\"]*\"|'[^']*'|[^\\s>]+))+)\\s*\\/?>",
+        "flags": "gi",
+        "where": "package/dist/docloader-Byq_mQp_.js:4629",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 520,
+          "ms": 1643.458,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 629.3294169999426
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 321.9261669999687
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.3085830000927672
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 629.3294169999426
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-rchf-xwx2-hm93",
+    "cve": "CVE-2025-68475",
+    "package": "@fedify/fedify",
+    "vulnerable": "1.8.14",
+    "patched": "1.8.15",
+    "regexes": [
+      {
+        "source": "<(a|link)((\\s+[a-z][a-z:_-]*=(\"[^\"]*\"|'[^']*'|[^\\s>]+))+)\\s*\\/?>",
+        "flags": "gi",
+        "where": "package/dist/docloader-Byq_mQp_.js:4629",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 520,
+          "ms": 1643.458,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 629.3294169999426
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 321.9261669999687
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.3085830000927672
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 629.3294169999426
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-rchf-xwx2-hm93",
+    "cve": "CVE-2025-68475",
+    "package": "@fedify/fedify",
+    "vulnerable": "1.9.1",
+    "patched": "1.9.2",
+    "regexes": [
+      {
+        "source": "<(a|link)((\\s+[a-z][a-z:_-]*=(\"[^\"]*\"|'[^']*'|[^\\s>]+))+)\\s*\\/?>",
+        "flags": "gi",
+        "where": "package/dist/docloader-Byq_mQp_.js:4629",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 520,
+          "ms": 1643.458,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 629.3294169999426
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 321.9261669999687
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.3085830000927672
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 629.3294169999426
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-q5f6-qxm2-mcqm",
+    "cve": "CVE-2026-22809",
+    "package": "tarteaucitronjs",
+    "vulnerable": "1.28.0",
+    "patched": "1.29.0",
+    "regexes": [
+      {
+        "source": "[^\\.]*\\.[^.]*$",
+        "flags": "",
+        "where": "package/tarteaucitron.services.js:2415",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1137.6405,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 572.1926659999881
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 3.143625000026077
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.1299160000635311
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 572.1926659999881
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-73rr-hh4g-fpgx",
+    "cve": "CVE-2026-24001",
+    "package": "diff",
+    "vulnerable": "8.0.2",
+    "patched": "8.0.3",
+    "regexes": [
+      {
+        "source": "^(?:Index:|diff(?: -r \\w+)+)\\s+(.+?)\\s*$",
+        "flags": "",
+        "where": "package/dist/diff.js:1004",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 2230,
+          "ms": 1338.561292,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": false,
+            "detail": "polynomial/constant",
+            "ms": 241.13141699996777
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 51.379500000039116
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.1576670000795275
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/constant",
+            "ms": 241.13141699996777
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": false,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-73rr-hh4g-fpgx",
+    "cve": "CVE-2026-24001",
+    "package": "diff",
+    "vulnerable": "3.5.0",
+    "patched": "3.5.1",
+    "regexes": [
+      {
+        "source": "^(?:Index:|diff(?: -r \\w+)+)\\s+(.+?)\\s*$",
+        "flags": "",
+        "where": "package/dist/diff.js:1004",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 2230,
+          "ms": 1338.561292,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": false,
+            "detail": "polynomial/constant",
+            "ms": 241.13141699996777
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 51.379500000039116
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.1576670000795275
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/constant",
+            "ms": 241.13141699996777
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": false,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-jg4p-7fhp-p32p",
+    "cve": "CVE-2026-35213",
+    "package": "@hapi/content",
+    "vulnerable": "6.0.0",
+    "patched": "6.0.1",
+    "regexes": [
+      {
+        "source": "^([^\\/\\s]+\\/[^\\s;]+)(.*)?$",
+        "flags": "",
+        "where": "package/lib/index.js:19",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 31591,
+          "ms": 1271.82325,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 601.7821249999106
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 4.4650840000249445
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.16399999998975545
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 601.7821249999106
+          }
+        }
+      },
+      {
+        "source": "([^\\=\\*\\s]+)(\\*)?\\s*\\=\\s*(?:([^;'\"\\s]+\\'[\\w-]*\\'[^;\\s]+)|(?:\\\"([^\"]*)\\\")|([^;\\s]*))(?:\\s*(?:;\\s*)|$)",
+        "flags": "g",
+        "where": "package/lib/index.js:88",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 2785,
+          "ms": 1347.78125,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 835.8177500000456
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/3rd degree polynomial",
+            "ms": 384.3131669999566
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.44116599997505546
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 835.8177500000456
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-9rmh-mm8f-r9h6",
+    "cve": "CVE-2026-42567",
+    "package": "svelte",
+    "vulnerable": "5.55.6",
+    "patched": "5.55.7",
+    "regexes": [
+      {
+        "source": "^[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9.\\-_\\u00B7\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u203F-\\u2040\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD\\u{10000}-\\u{EFFFF}]+)*$",
+        "flags": "u",
+        "where": "package/compiler/index.js:1",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 51,
+          "ms": 6000,
+          "killed": true
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 633.5423329999903
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/exponential",
+            "ms": 0.9843330000294372
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.046083000022917986
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "exponential/exponential",
+            "ms": 633.5423329999903
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-38m6-82c8-4xfm",
+    "cve": "CVE-2026-47138",
+    "package": "parse-server",
+    "vulnerable": "9.9.0",
+    "patched": "9.9.1-alpha.1",
+    "regexes": [
+      {
+        "source": "([-a-zA-Z]+)([0-9\\.]+)",
+        "flags": "",
+        "where": "package/lib/ClientSDK.js:24",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 39484,
+          "ms": 1044.727333,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1057.7859579999931
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 1.7877080000471324
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.19770900008734316
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1057.7859579999931
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-38m6-82c8-4xfm",
+    "cve": "CVE-2026-47138",
+    "package": "parse-server",
+    "vulnerable": "8.6.76",
+    "patched": "8.6.77",
+    "regexes": [
+      {
+        "source": "([-a-zA-Z]+)([0-9\\.]+)",
+        "flags": "",
+        "where": "package/lib/ClientSDK.js:24",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 39484,
+          "ms": 1044.727333,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1057.7859579999931
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 1.7877080000471324
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.19770900008734316
+          },
+          "redoscope-capped": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1057.7859579999931
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": true,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-8j4g-w8fx-2239",
+    "cve": "CVE-2026-69207",
+    "package": "hono",
+    "vulnerable": "4.12.33",
+    "patched": "4.12.34",
+    "regexes": [
+      {
+        "source": "\\s*,\\s*",
+        "flags": "",
+        "where": "package/dist/cjs/middleware/cors/index.js:82",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49357,
+          "ms": 1078.324916,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1843.9910420000087
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 2.459250000072643
+          },
+          "safe-regex": {
+            "flagged": false,
+            "detail": "safe",
+            "ms": 0.09416700003203005
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1843.9910420000087
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": false
+    }
+  },
+  {
+    "advisory": "GHSA-29g2-3rmr-qm68",
+    "cve": "CVE-2026-66062",
+    "package": "@sveltejs/kit",
+    "vulnerable": "2.70.1",
+    "patched": "2.70.2",
+    "regexes": [
+      {
+        "source": "([^/ \\t]+)\\/([^; \\t]+)[ \\t]*(?:;[ \\t]*q=([0-9.]+))?",
+        "flags": "",
+        "where": "package/src/utils/http.js:15",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 49356,
+          "ms": 1152.586167,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 737.266082999995
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/2nd degree polynomial",
+            "ms": 18.152709000045434
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.17183300002943724
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 737.266082999995
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": true
+    }
+  },
+  {
+    "advisory": "GHSA-2wm5-q62r-hmrv",
+    "cve": "CVE-2026-85062",
+    "package": "colord",
+    "vulnerable": "2.9.3",
+    "patched": "2.9.4",
+    "regexes": [
+      {
+        "source": "^hsla?\\(\\s*([+-]?\\d*\\.?\\d+)(deg|rad|grad|turn)?\\s*,\\s*([+-]?\\d*\\.?\\d+)%\\s*,\\s*([+-]?\\d*\\.?\\d+)%\\s*(?:,\\s*([+-]?\\d*\\.?\\d+)(%)?\\s*)?\\)$",
+        "flags": "i",
+        "where": "package/index.js:1",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 321,
+          "ms": 1443.964084,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1758.5788750000065
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/5th degree polynomial",
+            "ms": 97.67004200001247
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.24725000001490116
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1758.5788750000065
+          }
+        }
+      },
+      {
+        "source": "^hsla?\\(\\s*([+-]?\\d*\\.?\\d+)(deg|rad|grad|turn)?\\s+([+-]?\\d*\\.?\\d+)%\\s+([+-]?\\d*\\.?\\d+)%\\s*(?:\\/\\s*([+-]?\\d*\\.?\\d+)(%)?\\s*)?\\)$",
+        "flags": "i",
+        "where": "package/index.js:1",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 320,
+          "ms": 2412.335167,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1731.9430829999037
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/5th degree polynomial",
+            "ms": 78.62529200001154
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.3461670000106096
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1731.9430829999037
+          }
+        }
+      },
+      {
+        "source": "^rgba?\\(\\s*([+-]?\\d*\\.?\\d+)(%)?\\s*,\\s*([+-]?\\d*\\.?\\d+)(%)?\\s*,\\s*([+-]?\\d*\\.?\\d+)(%)?\\s*(?:,\\s*([+-]?\\d*\\.?\\d+)(%)?\\s*)?\\)$",
+        "flags": "i",
+        "where": "package/index.js:1",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 318,
+          "ms": 2589.797958,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1724.6310000000522
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/5th degree polynomial",
+            "ms": 39.26674999995157
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.2431250000372529
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1724.6310000000522
+          }
+        }
+      },
+      {
+        "source": "^rgba?\\(\\s*([+-]?\\d*\\.?\\d+)(%)?\\s+([+-]?\\d*\\.?\\d+)(%)?\\s+([+-]?\\d*\\.?\\d+)(%)?\\s*(?:\\/\\s*([+-]?\\d*\\.?\\d+)(%)?\\s*)?\\)$",
+        "flags": "i",
+        "where": "package/index.js:1",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 318,
+          "ms": 2138.560334,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1716.4921249999898
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/5th degree polynomial",
+            "ms": 40.312708000070415
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.2769169999519363
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1716.4921249999898
+          }
+        }
+      },
+      {
+        "source": "^device-cmyk\\(\\s*([+-]?\\d*\\.?\\d+)(%)?\\s+([+-]?\\d*\\.?\\d+)(%)?\\s+([+-]?\\d*\\.?\\d+)(%)?\\s+([+-]?\\d*\\.?\\d+)(%)?\\s*(?:\\/\\s*([+-]?\\d*\\.?\\d+)(%)?\\s*)?\\)$",
+        "flags": "i",
+        "where": "package/plugins/cmyk.js:1",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 212,
+          "ms": 2548.843584,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1717.8508330000332
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/6th degree polynomial",
+            "ms": 121.86416699993424
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.2515000000130385
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1717.8508330000332
+          }
+        }
+      },
+      {
+        "source": "^hwb\\(\\s*([+-]?\\d*\\.?\\d+)(deg|rad|grad|turn)?\\s+([+-]?\\d*\\.?\\d+)%\\s+([+-]?\\d*\\.?\\d+)%\\s*(?:\\/\\s*([+-]?\\d*\\.?\\d+)(%)?\\s*)?\\)$",
+        "flags": "i",
+        "where": "package/plugins/hwb.js:1",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 319,
+          "ms": 1478.685291,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1732.0213750000112
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/5th degree polynomial",
+            "ms": 87.8513329999987
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.36574999999720603
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1732.0213750000112
+          }
+        }
+      },
+      {
+        "source": "^lch\\(\\s*([+-]?\\d*\\.?\\d+)%\\s+([+-]?\\d*\\.?\\d+)\\s+([+-]?\\d*\\.?\\d+)(deg|rad|grad|turn)?\\s*(?:\\/\\s*([+-]?\\d*\\.?\\d+)(%)?\\s*)?\\)$",
+        "flags": "i",
+        "where": "package/plugins/lch.js:1",
+        "judge": {
+          "confirmed": true,
+          "by": "recheck",
+          "length": 316,
+          "ms": 2920.586333,
+          "killed": false
+        },
+        "tools": {
+          "redoscope": {
+            "flagged": true,
+            "detail": "polynomial/polynomial",
+            "ms": 1208.7996669999557
+          },
+          "recheck": {
+            "flagged": true,
+            "detail": "vulnerable/5th degree polynomial",
+            "ms": 65.4747919999063
+          },
+          "safe-regex": {
+            "flagged": true,
+            "detail": "unsafe",
+            "ms": 0.2444159999722615
+          },
+          "redoscope-capped": {
+            "flagged": false,
+            "detail": "polynomial/polynomial",
+            "ms": 1208.7996669999557
+          }
+        }
+      }
+    ],
+    "detectedBy": {
+      "redoscope": true,
+      "redoscope-capped": false,
+      "recheck": true,
+      "safe-regex": true
+    }
+  }
+]

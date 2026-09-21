@@ -1,0 +1,11 @@
+{
+  "name": "redoscope-cve-bench",
+  "private": true,
+  "type": "module",
+  "description": "Benchmark harness only. redoscope itself has zero runtime dependencies; these are the tools it is compared against.",
+  "dependencies": {
+    "recheck": "4.5.0",
+    "safe-regex": "2.1.1",
+    "semver": "7.7.2"
+  }
+}
